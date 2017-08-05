@@ -8,4 +8,12 @@
     <StartupObject />
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Encrypt.Config.RSA\Encrypt.Config.RSA.csproj" />
+  </ItemGroup>
+
 </Project>
