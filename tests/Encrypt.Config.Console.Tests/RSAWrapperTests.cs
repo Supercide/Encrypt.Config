@@ -8,6 +8,7 @@ using System.Management;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
+using Encrypt.Config.RSA;
 
 namespace Encrypt.Config.Console.Tests
 {
@@ -30,11 +31,9 @@ namespace Encrypt.Config.Console.Tests
         [Test]
         public void GivenValidData_WhenCreatingContainer_ThenReturnsExportKey()
         {
-            RSAContainerFactory factory = new RSAContainerFactory();
-
             var containerName = $"{Guid.NewGuid()}";
 
-            using (var rsaContainer = factory.Create(containerName, User))
+            using (var rsaContainer = RSAContainerFactory.Create(containerName, User))
             {
                 var rsaExport = rsaContainer.Export(false);
 
@@ -47,17 +46,15 @@ namespace Encrypt.Config.Console.Tests
         [Test]
         public void GivenDataEncryptedWithPublicKey_WhenDecryptingDataFromPrivateKey_ThenDecryptsData()
         {
-            RSAContainerFactory factory = new RSAContainerFactory();
-
             var salt = new byte[]{1,4,3,2,5,3,2};
 
             string message = "Secret message";
 
-            using (var rsaContainerOne = factory.Create($"{Guid.NewGuid()}", User))
+            using (var rsaContainerOne = RSAContainerFactory.Create($"{Guid.NewGuid()}", User))
             {
                 var privateKeyExport = rsaContainerOne.Export(true);
                 
-                using (var privateContainer = factory.CreateFromPublicKey($"{Guid.NewGuid()}", privateKeyExport, User))
+                using (var privateContainer = RSAContainerFactory.CreateFromPublicKey($"{Guid.NewGuid()}", privateKeyExport, User))
                 {
                     var encryptedData = rsaContainerOne.Encrypt(Encoding.Unicode.GetBytes(message), salt);
 
@@ -73,11 +70,9 @@ namespace Encrypt.Config.Console.Tests
         [Test]
         public void GivenUsername_WhenCreatingContainer_ThenOnlyProvidedUserNameHasAccess()
         {
-            RSAContainerFactory factory = new RSAContainerFactory();
-
             var keyContainerName = $"{Guid.NewGuid()}";
 
-            using (factory.Create(keyContainerName, User))
+            using (RSAContainerFactory.Create(keyContainerName, User))
             {
                 var container = LoadCspKeyContainerInfo(keyContainerName);
 
@@ -94,11 +89,9 @@ namespace Encrypt.Config.Console.Tests
         [Test]
         public void GivenUsername_WhenCreatingContainer_ThenSetsAccessControlToReadOnlyForUser()
         {
-            RSAContainerFactory factory = new RSAContainerFactory();
-
             var containerName = $"{Guid.NewGuid()}";
 
-            using (var wrapper = factory.Create(containerName, User))
+            using (var wrapper = RSAContainerFactory.Create(containerName, User))
             {
                 var path = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", wrapper.UniqueContainerName());
 
@@ -123,9 +116,7 @@ namespace Encrypt.Config.Console.Tests
         [Test]
         public void GivenContainerName_WhenCreatingContainer_CreatesContainer_WithName()
         {
-            RSAContainerFactory factory = new RSAContainerFactory();
-
-            using (var rsaContainer = factory.Create($"{Guid.NewGuid()}", User))
+            using (var rsaContainer = RSAContainerFactory.Create($"{Guid.NewGuid()}", User))
             {
                 CspKeyContainerInfo container = LoadCspKeyContainerInfo(rsaContainer.ContainerName());
 
@@ -136,9 +127,7 @@ namespace Encrypt.Config.Console.Tests
         [Test]
         public void GivenValidData_WhenCreatingContainer_ThenReturnsUniqueName()
         {
-            RSAContainerFactory factory = new RSAContainerFactory();
-
-            using (var rsaContainer = factory.Create($"{Guid.NewGuid()}", User))
+            using (var rsaContainer = RSAContainerFactory.Create($"{Guid.NewGuid()}", User))
             {
                 CspKeyContainerInfo container = LoadCspKeyContainerInfo(rsaContainer.ContainerName());
 

@@ -5,4 +5,8 @@
     <TargetFramework>net47</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Encrypt.Config.Json\Encrypt.Config.Json.csproj" />
+  </ItemGroup>
+
 </Project>

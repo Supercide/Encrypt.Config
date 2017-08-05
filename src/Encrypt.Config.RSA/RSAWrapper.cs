@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace Encrypt.Config.Console {
+namespace Encrypt.Config.RSA {
     public class RSAWrapper : IDisposable
     {
         private readonly RSACryptoServiceProvider _rsaCryptoServiceProvider;
@@ -12,9 +12,9 @@ namespace Encrypt.Config.Console {
             _rsaCryptoServiceProvider = rsaCryptoServiceProvider;
         }
 
-        public RsaExport Export(bool includePrivate)
+        public RSAExport Export(bool includePrivate)
         {
-            return new RsaExport()
+            return new RSAExport()
             {
                 Key = _rsaCryptoServiceProvider.ToXmlString(includePrivate),
 

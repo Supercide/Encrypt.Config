@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Encrypt.Config.Json;
+using Encrypt.Config.RSA;
 
 namespace Encrypt.Config.Console
 {
@@ -14,17 +16,16 @@ namespace Encrypt.Config.Console
                 commands.Add(args[index], args[index+1]);
             }
 
-            var rsaContainerFactory = new RSAContainerFactory();
-
-            using (var wrapper = rsaContainerFactory.Create(commands["-n"], commands["-u"]))
+            using (var wrapper = RSAContainerFactory.Create(commands["-n"], commands["-u"]))
+            using (var fileEncrypter = new JsonConfigurationFileEncrypter(wrapper))
             {
                 var export = wrapper.Export(false);
 
-
-
                 if(commands.ContainsKey("-jc"))
                 {
-                    var json = File.ReadAllText(commands["-jc"]);
+                    var jsonEncrypted = fileEncrypter.Encrypt(commands["-jc"]);
+
+                    File.WriteAllText("appsettings.encrypted.json", jsonEncrypted);
                 }
 
                 if (commands.ContainsKey("-pbo"))

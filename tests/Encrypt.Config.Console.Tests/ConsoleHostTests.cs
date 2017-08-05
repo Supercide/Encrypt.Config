@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
@@ -6,6 +7,8 @@ using NUnit.Framework;
 
 namespace Encrypt.Config.Console.Tests
 {
+    // TODO: Don't encrypt and port key in the same opersation, only encrypted with imported public key
+
     [TestFixture]
     public class ConsoleHostTests
     {
@@ -15,6 +18,7 @@ namespace Encrypt.Config.Console.Tests
         {
             _files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
                               .ToArray();
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
         }
 
         [Test]
@@ -33,6 +37,16 @@ namespace Encrypt.Config.Console.Tests
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
             Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "TestContainer" , "-jc", "appsettings.json"});
+
+            FileAssert.Exists("appsettings.encrypted.json");
+        }
+
+        [Test]
+        public void GivenEncryptedConfig_AndPrivateKey_WhenDecryptingConfigOptionToEncryptConfig_WhenCallingCommand_ThenEncryptsConfig()
+        {
+            var currentUser = WindowsIdentity.GetCurrent().Name;
+
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "TestContainer", "-jc", "appsettings.json" });
 
             FileAssert.Exists("appsettings.encrypted.json");
         }

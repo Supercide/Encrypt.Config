@@ -1,12 +1,11 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 
-namespace Encrypt.Config.Console {
+namespace Encrypt.Config.RSA {
     public class RSAContainerFactory
     {
-        public RSAWrapper Create(string containerName, string username)
+        public static RSAWrapper Create(string containerName, string username)
         {
             var cspParams = CreateCspParamerters(containerName);
 
@@ -43,7 +42,7 @@ namespace Encrypt.Config.Console {
             return cspParams;
         }
 
-        public RSAWrapper CreateFromPublicKey(string containerName, RsaExport export, string username)
+        public static RSAWrapper CreateFromPublicKey(string containerName, RSAExport export, string username)
         {
             CspParameters cspParams = CreateCspParamerters(containerName);
 
