@@ -46,10 +46,5 @@ namespace Encrypt.Config.Console {
         {
             return _rsaCryptoServiceProvider.CspKeyContainerInfo.UniqueKeyContainerName;
         }
-
-        public string PrivateKey()
-        {
-            return _rsaCryptoServiceProvider.ToXmlString(true);
-        }
     }
 }
