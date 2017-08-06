@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Encrypt.Config.Console.ConsoleStateMachine.Factories;
+using Encrypt.Config.Console.ConsoleStateMachine.States;
 using Encrypt.Config.Json;
 using Encrypt.Config.RSA;
 using Newtonsoft.Json;
@@ -18,13 +20,13 @@ namespace Encrypt.Config.Console
         {
             Dictionary<string, string> context = ToCommands(args);
 
-            if (context.ContainsKey(WellKnownCommands.JSON_CONFIGURATION_PATH) && 
-                context.ContainsKey(WellKnownCommands.EXPORT_PUBLIC_KEY))
+            if (context.ContainsKey(WellKnownCommandArguments.JSON_CONFIGURATION_PATH) && 
+                context.ContainsKey(WellKnownCommandArguments.EXPORT_PUBLIC_KEY))
             {
                 throw new InvalidOperationException();
             }
 
-            if(context.ContainsKey(WellKnownCommands.PUBLIC_KEY_PATH))
+            if(context.ContainsKey(WellKnownCommandArguments.PUBLIC_KEY_PATH))
             {
                 EncryptConfigurationFromPublicKey(context);
             } else
@@ -35,27 +37,27 @@ namespace Encrypt.Config.Console
 
         private static void ExportPublicKey(Dictionary<string, string> context)
         {
-            using (var wrapper = RSAContainerFactory.Create(context[WellKnownCommands.SET_CONTAINER_NAME], context[WellKnownCommands.SET_USERNAME]))
+            using (var wrapper = RSAContainerFactory.Create(context[WellKnownCommandArguments.SET_CONTAINER_NAME], context[WellKnownCommandArguments.SET_USERNAME]))
             {
                 var export = wrapper.Export(false);
 
-                if(context.ContainsKey(WellKnownCommands.EXPORT_PUBLIC_KEY))
+                if(context.ContainsKey(WellKnownCommandArguments.EXPORT_PUBLIC_KEY))
                 {
-                    File.WriteAllText(context[WellKnownCommands.EXPORT_PUBLIC_KEY], export);
+                    File.WriteAllText(context[WellKnownCommandArguments.EXPORT_PUBLIC_KEY], export);
                 }
             }
         }
 
         private static void EncryptConfigurationFromPublicKey(Dictionary<string, string> commands)
         {
-            var publicKey = File.ReadAllText(commands[WellKnownCommands.PUBLIC_KEY_PATH]);
+            var publicKey = File.ReadAllText(commands[WellKnownCommandArguments.PUBLIC_KEY_PATH]);
 
-            using (var wrapper = RSAContainerFactory.CreateFromPublicKey(commands[WellKnownCommands.SET_CONTAINER_NAME], publicKey, commands[WellKnownCommands.SET_USERNAME]))
+            using (var wrapper = RSAContainerFactory.CreateFromPublicKey(commands[WellKnownCommandArguments.SET_CONTAINER_NAME], publicKey, commands[WellKnownCommandArguments.SET_USERNAME]))
             using (var fileEncrypter = new JsonConfigurationFileEncrypter(wrapper))
             {
-                if(commands.ContainsKey(WellKnownCommands.JSON_CONFIGURATION_PATH))
+                if(commands.ContainsKey(WellKnownCommandArguments.JSON_CONFIGURATION_PATH))
                 {
-                    using (var reader = new JsonTextReader(new StreamReader(commands[WellKnownCommands.JSON_CONFIGURATION_PATH])))
+                    using (var reader = new JsonTextReader(new StreamReader(commands[WellKnownCommandArguments.JSON_CONFIGURATION_PATH])))
                     {
                         JObject jsonEncrypted = fileEncrypter.Encrypt(JObject.Load(reader));
 
@@ -68,8 +70,8 @@ namespace Encrypt.Config.Console
         private static Dictionary<string, string> ToCommands(string[] args)
         {
             string[] commandsWithArguments = Regex.Split(string.Join(" ", args), "(^-|\\s-)")
-                                     .Where(x => x.Trim() != "-" && !string.IsNullOrWhiteSpace(x))
-                                     .ToArray();
+                                                  .Where(x => x.Trim() != "-" && !string.IsNullOrWhiteSpace(x))
+                                                  .ToArray();
 
             Dictionary<string, string> commandDictionary = new Dictionary<string, string>();
 
@@ -81,6 +83,17 @@ namespace Encrypt.Config.Console
             }
 
             return commandDictionary;
+        }
+
+        public ConsoleState CreateState(string command)
+        {
+            IConsoleStateFactory[] factories = new[]
+            {
+                new CreateStateFactory(),
+            };
+
+            return factories.Single(factory => factory.CanParse(command))
+                            .Create();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading;
@@ -20,6 +21,12 @@ namespace Encrypt.Config.Console.Tests
     [TestFixture]
     public class ConsoleHostTests
     {
+        /*
+         * Create key | export key
+         * Export key
+         * encrypt file
+         * 
+         */
         private readonly string[] _files;
 
         public ConsoleHostTests()
@@ -32,23 +39,67 @@ namespace Encrypt.Config.Console.Tests
         }
 
         [Test]
-        public void GivenArguments_WhenGeneratingKey_GeneratesKey()
+        public void GivenPublicKeyOutArgument_WhenCreateRSAKeys_ThenExportsPublicKeyAfterCreatingKey()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new []{"-u", $"{currentUser}","-pbo","publicKey.xml", "-n", "TestContainer"});
+            Program.Main(new []{"create keys -u", $"{currentUser}","-o","publicKey.xml", "-n", "TestContainer"});
 
             FileAssert.Exists("publicKey.xml");
         }
 
         [Test]
-        public void GivenOptionToEncryptConfig_WhenCallingCommand_ThenEncryptsConfig()
+        public void GivenUserName_WhenCreateRSAKeys_ThenCreatesKeyForUsername()
+        {
+            var currentUser = WindowsIdentity.GetCurrent().Name;
+
+            Program.Main(new[] { "create keys -u", $"{currentUser}", "-n", "TestContainer" });
+
+            var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys");
+
+            var containerFile = files.Except(_files).Single();
+
+            var controlList = File.GetAccessControl(containerFile);
+
+            var accessRule = controlList.GetAccessRules(true, true, typeof(NTAccount))
+                                         .Cast<AuthorizationRule>()
+                                         .Single();
+
+            Assert.That(accessRule.IdentityReference.Value, Is.EqualTo(currentUser));
+        }
+
+        [Test]
+        public void GivenPublicKeyIsSupplied_WhenEncryptingConfig_ThenEncryptsConfig()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
             Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine"});
 
             Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine" , "-jc", "appsettings.json"});
+
+            FileAssert.Exists("appsettings.encrypted.json");
+        }
+
+        [Test]
+        public void GivenContainerNameIsSupplied_AndPublicKey_WhenCreatingContainer_ThenCreatesContainer()
+        {
+            var currentUser = WindowsIdentity.GetCurrent().Name;
+
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine" });
+
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine"});
+
+            FileAssert.Exists("appsettings.encrypted.json");
+        }
+
+        [Test]
+        public void GivenContainerNameIsSupplied_AndContainerAlreadyContainsPublicKey_WhenEncryptingConfig_ThenEncryptsConfig()
+        {
+            var currentUser = WindowsIdentity.GetCurrent().Name;
+
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine" });
+
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine", "-jc", "appsettings.json" });
 
             FileAssert.Exists("appsettings.encrypted.json");
         }
