@@ -1,31 +1,71 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4ABFC56C-B6AA-4A2D-9251-2882752EE41C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <TargetFramework>net47</TargetFramework>
-    <ApplicationIcon />
-    <OutputTypeEx>library</OutputTypeEx>
-    <StartupObject />
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Encrypt.Config.Console.Tests</RootNamespace>
+    <AssemblyName>Encrypt.Config.Console.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.7.1" />
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Encrypt.Config.Console\Encrypt.Config.ConsoleHost.csproj" />
-    <ProjectReference Include="..\..\src\Encrypt.Config.RSA\Encrypt.Config.RSA.csproj" />
+    <Compile Include="ConsoleHostTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RSAWrapperTests.cs" />
   </ItemGroup>
-
   <ItemGroup>
-    <Reference Include="System.Management" />
-    <Reference Include="System.Security" />
+    <ProjectReference Include="..\..\src\Encrypt.Config.ConsoleHost\Encrypt.Config.ConsoleHost.csproj">
+      <Project>{D4C72C5C-6851-4B7E-8DB1-DF62DC991091}</Project>
+      <Name>Encrypt.Config.ConsoleHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Encrypt.Config.Json\Encrypt.Config.Json.csproj">
+      <Project>{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}</Project>
+      <Name>Encrypt.Config.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Encrypt.Config.RSA\Encrypt.Config.RSA.csproj">
+      <Project>{1475C531-0697-42A2-B2F0-1A35A14EAB0B}</Project>
+      <Name>Encrypt.Config.RSA</Name>
+    </ProjectReference>
   </ItemGroup>
-
   <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
-
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

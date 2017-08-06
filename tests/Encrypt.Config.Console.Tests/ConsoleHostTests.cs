@@ -7,6 +7,7 @@ using System.Security.Principal;
 using Encrypt.Config.ConsoleHost;
 using Encrypt.Config.Json;
 using Encrypt.Config.RSA;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -88,31 +89,11 @@ namespace Encrypt.Config.Console.Tests
                 $"-{WellKnownCommandArguments.IMPORT_KEY}", "publicKey.xml",
                 $"-{ WellKnownCommandArguments.JSON_CONFIGURATION_PATH}", "appsettings.json"});
 
-            FileAssert.Exists("appsettings.encrypted.json");
-        }
-
-        [Test]
-        public void GivenEncryptJsonConfigCommand_WithOnlyContainerArgument_WhenEncryptingConfig_ThenEncryptsConfigFromContainersPublicKey()
-        {
-            var currentUser = WindowsIdentity.GetCurrent().Name;
-
-            Program.Main(new[] { "create", "keys",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", "publicKey.xml",
-                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "webMachine"});
-
-            Program.Main(new[]{"create", "container",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{WellKnownCommandArguments.IMPORT_KEY}", "publicKey.xml",
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "DeploymentMachine"});
-
-            Program.Main(new[] { "encrypt","json","config",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "DeploymentMachine",
-                $"-{ WellKnownCommandArguments.JSON_CONFIGURATION_PATH}", "appsettings.json"});
+            var decryptedConfig = DecryptFile("TestContainer");
 
             FileAssert.Exists("appsettings.encrypted.json");
+
+            Assert.That(decryptedConfig.ToString(), Is.EqualTo(JObject.Parse(File.ReadAllText("appsettings.json")).ToString()));
         }
 
         [Test]
@@ -157,7 +138,7 @@ namespace Encrypt.Config.Console.Tests
 
            Assert.Throws<InvalidOperationException>(() => Program.Main(new[]{"create", "container",
                 $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-               $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "anotherContainer",
+                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "anotherContainer",
                 $"-{WellKnownCommandArguments.IMPORT_KEY}", expectedKeyFile}));
         }
 
