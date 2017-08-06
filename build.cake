@@ -6,8 +6,8 @@ var target = Argument("target", "Default");
 // VARIABLES
 //////////////////////////////////////////////////////////////////////
 
-string semVersion = EnvironmentVariable("BUILD_VERSION") ?? "1.0.0";
-string version = string.Join(".", semVersion.Split('.').Take(3));
+string semVersion = EnvironmentVariable("BUILD_VERSION") ?? "1.0.0-DEV";
+string version = string.Join(".", semVersion.Split(new string []{".","-"}, StringSplitOptions.RemoveEmptyEntries).Take(3));
 
 const string BUILD_CONFIG = "Release";
 const string SOLUTION_PATH = "./Encrypt.Config.sln";
@@ -52,8 +52,8 @@ Task("NugetRestore")
 ///////////////////////////////////////////////////////////////////////////////
 
 Task("Build")
-    .IsDependentOn("NugetRestore")
     .IsDependentOn("Patch")
+    .IsDependentOn("NugetRestore")
     .Does(() =>
     {
 		MSBuild(SOLUTION_PATH, configurator => configurator
