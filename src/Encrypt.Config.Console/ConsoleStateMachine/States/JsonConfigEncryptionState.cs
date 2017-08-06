@@ -48,7 +48,7 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
 
             var key = File.ReadAllText(keyPath);
 
-            return new RSAContainerFactory.CreateFromPublicKey(key);
+            return RSAContainerFactory.CreateFromPublicKey(key);
         }
     }
 }
