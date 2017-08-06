@@ -1,6 +1,5 @@
+version: 0.1.0
 # master
--
-  version: 0.1.0
 -
   branches:
     only:
