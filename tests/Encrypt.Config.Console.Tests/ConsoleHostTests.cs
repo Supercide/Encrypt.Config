@@ -39,21 +39,21 @@ namespace Encrypt.Config.Console.Tests
         }
 
         [Test]
-        public void GivenPublicKeyOutArgument_WhenCreateRSAKeys_ThenExportsPublicKeyAfterCreatingKey()
+        public void GivenCreateKeysCommand_WithKeyOutArgumentSupplied_WhenCreatingKeys_ThenExportsPublicKey()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new []{"create keys -u", $"{currentUser}","-o","publicKey.xml", "-n", "TestContainer"});
+            Program.Main(new []{"create", "keys", "-u", $"{currentUser}","-o","publicKey.xml", "-n", "TestContainer"});
 
             FileAssert.Exists("publicKey.xml");
         }
 
         [Test]
-        public void GivenUserName_WhenCreateRSAKeys_ThenCreatesKeyForUsername()
+        public void GivenCreateKeysCommand_WithNoOptionalArguments_WhenCreatingKeys_ThenCreatesKeyForUsername()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new[] { "create keys -u", $"{currentUser}", "-n", "TestContainer" });
+            Program.Main(new[] { "create", "keys", "-u", $"{currentUser}", "-n", "TestContainer" });
 
             var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys");
 
@@ -69,52 +69,47 @@ namespace Encrypt.Config.Console.Tests
         }
 
         [Test]
-        public void GivenPublicKeyIsSupplied_WhenEncryptingConfig_ThenEncryptsConfig()
+        public void GivenEncryptJsonConfigCommand_WithImportPublicKey_WhenEncryptingConfig_ThenEncryptsConfigWithPublicKey()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine"});
+            Program.Main(new[] { "create", "keys", "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine"});
 
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine" , "-jc", "appsettings.json"});
+            Program.Main(new[] { "encrypt","json","config","-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine" , "-jc", "appsettings.json"});
 
             FileAssert.Exists("appsettings.encrypted.json");
         }
 
         [Test]
-        public void GivenContainerNameIsSupplied_AndPublicKey_WhenCreatingContainer_ThenCreatesContainer()
+        public void GivenEncryptJsonConfigCommand_WithOnlyContainerArgument_WhenEncryptingConfig_ThenEncryptsConfigFromContainersPublicKey()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine" });
+            Program.Main(new[] { "create", "keys", "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine" });
 
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine"});
+            Program.Main(new[] { "create", "container", "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine" });
+
+            Program.Main(new[] { "encrypt", "json", "config", "-n", "DeploymentMachine", "-jc", "appsettings.json" });
 
             FileAssert.Exists("appsettings.encrypted.json");
         }
 
         [Test]
-        public void GivenContainerNameIsSupplied_AndContainerAlreadyContainsPublicKey_WhenEncryptingConfig_ThenEncryptsConfig()
+        public void GivenCreateContainerCommand_WhenCreatingContainer_ThenCreatesContainer()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine" });
+            Program.Main(new[] { "-u", $"{currentUser}", "-n", "WebMachine" });
 
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine", "-jc", "appsettings.json" });
-
-            FileAssert.Exists("appsettings.encrypted.json");
+            Assert.Fail();
         }
 
-        [Test]
-        public void GivenEncryptedFile_WhenDecryptingWithPrivateKey_ThenDecryptsConfig()
+        
+        public JObject DecryptFile(string containerName)
         {
-            var currentUser = WindowsIdentity.GetCurrent().Name;
-
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine" });
-
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine", "-jc", "appsettings.json" });
             CspParameters cspParams = new CspParameters
             {
-                KeyContainerName = "WebMachine",
+                KeyContainerName = containerName,
                 KeyNumber = (int)KeyNumber.Exchange,
                 Flags = CspProviderFlags.UseMachineKeyStore | CspProviderFlags.NoPrompt,
             };
@@ -124,18 +119,16 @@ namespace Encrypt.Config.Console.Tests
             {
                 JsonConfigurationFileEncrypter encrypter = new JsonConfigurationFileEncrypter(wrapper);
 
-                var decryptedConfig = encrypter.Decrypt(JObject.Parse(File.ReadAllText("appsettings.encrypted.json")));
-                var originalConfig = JObject.Parse(File.ReadAllText("appsettings.json"));
-                Assert.That(decryptedConfig.ToString(Formatting.None), Is.EqualTo(originalConfig.ToString(Formatting.None)));
+                return encrypter.Decrypt(JObject.Parse(File.ReadAllText("appsettings.encrypted.json")));
             }
         }
 
         [Test]
-        public void GivenOptionToEncryptConfig_AndSavePublicKey_WhenCallingCommand_ThenThrowsException()
+        public void GivenCreateKeysCommand_WithInvalidArguments_WhenCreatingKeys_ThenThrowsException()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Assert.Throws<InvalidOperationException>(() => Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "TestContainer", "-jc", "appsettings.json" }));
+            Assert.Throws<InvalidOperationException>(() => Program.Main(new[] { "create","keys","-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "TestContainer", "-jc", "appsettings.json" }));
         }
 
         [TearDown]

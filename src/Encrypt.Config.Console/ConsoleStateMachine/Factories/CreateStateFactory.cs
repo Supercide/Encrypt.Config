@@ -6,12 +6,13 @@ namespace Encrypt.Config.Console.ConsoleStateMachine.Factories {
     {
         public bool CanParse(string command)
         {
-            throw new NotImplementedException();
+            return command.ToLower()
+                          .Contains(WellKnownCommands.CREATE_KEYS);
         }
 
         public ConsoleState Create()
         {
-            return new CreateState();
+            return new CreateKeysState();
         }
     }
 }

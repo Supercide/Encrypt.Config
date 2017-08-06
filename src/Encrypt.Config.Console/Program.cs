@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Encrypt.Config.Console.ConsoleStateMachine;
 using Encrypt.Config.Console.ConsoleStateMachine.Factories;
 using Encrypt.Config.Console.ConsoleStateMachine.States;
 using Encrypt.Config.Json;
@@ -16,17 +17,20 @@ namespace Encrypt.Config.Console
     {
         public const string COMMAND_DELIMINATOR = "-";
 
-        private readonly IConsoleStateFactory[] _factories = {
+        private static readonly IConsoleStateFactory[] _factories = {
             new CreateStateFactory(),
-            new EncryptStateFactory(),
+            new JsonConfigEncryptionStateFactory(),
             new ImportStateFactory(),
             new ExportStateFactory()
         };
 
         public static void Main(string[] args)
         {
-            Dictionary<string, string> context = ToCommands(args);
+            var context = ToCommands(args);
 
+            context.Request();
+
+            /*
             if (context.ContainsKey(WellKnownCommandArguments.JSON_CONFIGURATION_PATH) && 
                 context.ContainsKey(WellKnownCommandArguments.EXPORT_PUBLIC_KEY))
             {
@@ -40,6 +44,7 @@ namespace Encrypt.Config.Console
             {
                 ExportPublicKey(context);
             }
+            */
         }
 
         private static void ExportPublicKey(Dictionary<string, string> context)
@@ -74,25 +79,27 @@ namespace Encrypt.Config.Console
             }
         }
 
-        private static Dictionary<string, string> ToCommands(string[] args)
+        private static Context ToCommands(string[] args)
         {
             string[] commandsWithArguments = Regex.Split(string.Join(" ", args), "(^-|\\s-)")
                                                   .Where(x => x.Trim() != "-" && !string.IsNullOrWhiteSpace(x))
                                                   .ToArray();
 
+            var consoleState = CreateState(commandsWithArguments.First());
+
             Dictionary<string, string> commandDictionary = new Dictionary<string, string>();
 
-            foreach (var commandLine in commandsWithArguments)
+            foreach (var commandLine in commandsWithArguments.Skip(1))
             {
                 var sections = commandLine.Split(' ');
 
                 commandDictionary.Add(sections[0], string.Join(" ", sections.Skip(1)));
             }
 
-            return commandDictionary;
+            return new Context(commandDictionary, consoleState);
         }
 
-        public ConsoleState CreateState(string command)
+        public static ConsoleState CreateState(string command)
         {
             return _factories.Single(factory => factory.CanParse(command))
                              .Create();

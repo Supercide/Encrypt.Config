@@ -1,7 +1,7 @@
 using System;
 
 namespace Encrypt.Config.Console.ConsoleStateMachine.States {
-    public class CreateState : ConsoleState {
+    public class CreateKeysState : ConsoleState {
 
         public override void Handle(Context context)
         {
