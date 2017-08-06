@@ -13,20 +13,11 @@ using NUnit.Framework;
 
 namespace Encrypt.Config.Console.Tests
 {
-    
-    /*
-     * Help command
-     */
+    //TODO:Help command
 
     [TestFixture]
     public class ConsoleHostTests
     {
-        /*
-         * Create key | export key
-         * Export key
-         * encrypt file
-         * 
-         */
         private readonly string[] _files;
 
         public ConsoleHostTests()
@@ -47,7 +38,7 @@ namespace Encrypt.Config.Console.Tests
                                 $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
                                 $"-{WellKnownCommandArguments.EXPORT_KEY}", "publicKey.xml",
                                 $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
+                                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
 
             FileAssert.Exists("publicKey.xml");
         }
@@ -59,7 +50,7 @@ namespace Encrypt.Config.Console.Tests
 
             Program.Main(new[] { "create", "keys",
                                 $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
+                                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
 
             var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys");
 
@@ -83,11 +74,11 @@ namespace Encrypt.Config.Console.Tests
                 $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
                 $"-{WellKnownCommandArguments.EXPORT_KEY}", "publicKey.xml",
                 $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
 
             Program.Main(new[] { "encrypt","json","config",
                 $"-{WellKnownCommandArguments.IMPORT_KEY}", "publicKey.xml",
-                $"-{ WellKnownCommandArguments.JSON_CONFIGURATION_PATH}", "appsettings.json"});
+                $"-{WellKnownCommandArguments.JSON_CONFIGURATION_PATH}", "appsettings.json"});
 
             var decryptedConfig = DecryptFile("TestContainer");
 
@@ -106,14 +97,14 @@ namespace Encrypt.Config.Console.Tests
                 $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
                 $"-{WellKnownCommandArguments.EXPORT_KEY}", expectedKeyFile,
                 $"-{WellKnownCommandArguments.EXPORT_PRIVATE_KEY}",
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
 
             var containerWithImportedKeys = "ContainerWithImportedKeys";
 
             Program.Main(new[]{"create", "container",
                 $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
                 $"-{WellKnownCommandArguments.IMPORT_KEY}", expectedKeyFile,
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", containerWithImportedKeys});
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerWithImportedKeys});
 
             var provider = LoadContainer(containerWithImportedKeys);
 
@@ -133,12 +124,12 @@ namespace Encrypt.Config.Console.Tests
                 $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
                 $"-{WellKnownCommandArguments.EXPORT_KEY}", expectedKeyFile,
                 $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
 
 
            Assert.Throws<InvalidOperationException>(() => Program.Main(new[]{"create", "container",
                 $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "anotherContainer",
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "anotherContainer",
                 $"-{WellKnownCommandArguments.IMPORT_KEY}", expectedKeyFile}));
         }
 
@@ -178,7 +169,7 @@ namespace Encrypt.Config.Console.Tests
                 $"-{WellKnownCommandArguments.EXPORT_KEY}", "key.xml",
                 $"-{WellKnownCommandArguments.JSON_CONFIGURATION_PATH}", "appsettings.json",
                 $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                $"-{ WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
 
             FileAssert.DoesNotExist("appsettings.encrypted.json");
         }
