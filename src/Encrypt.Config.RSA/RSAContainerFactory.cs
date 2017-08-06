@@ -37,12 +37,13 @@ namespace Encrypt.Config.RSA {
             {
                 KeyContainerName = containerName,
                 KeyNumber = (int) KeyNumber.Exchange,
-                Flags = CspProviderFlags.UseMachineKeyStore | CspProviderFlags.NoPrompt
+                Flags = CspProviderFlags.UseMachineKeyStore | CspProviderFlags.NoPrompt,
             };
+
             return cspParams;
         }
 
-        public static RSAWrapper CreateFromPublicKey(string containerName, RSAExport export, string username)
+        public static RSAWrapper CreateFromPublicKey(string containerName, string publicKey, string username)
         {
             CspParameters cspParams = CreateCspParamerters(containerName);
 
@@ -50,10 +51,8 @@ namespace Encrypt.Config.RSA {
             {
                 PersistKeyInCsp = true
             };
-
-            rsaProvider.ImportParameters(export.RsaParameters);
-
-            rsaProvider.FromXmlString(export.Key);
+            
+            rsaProvider.FromXmlString(publicKey);
 
             return new RSAWrapper(rsaProvider);
         }

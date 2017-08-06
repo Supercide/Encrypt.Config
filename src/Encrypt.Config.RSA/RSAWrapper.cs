@@ -12,14 +12,9 @@ namespace Encrypt.Config.RSA {
             _rsaCryptoServiceProvider = rsaCryptoServiceProvider;
         }
 
-        public RSAExport Export(bool includePrivate)
+        public string Export(bool includePrivate)
         {
-            return new RSAExport()
-            {
-                Key = _rsaCryptoServiceProvider.ToXmlString(includePrivate),
-
-                RsaParameters = _rsaCryptoServiceProvider.ExportParameters(includePrivate)
-            };
+            return _rsaCryptoServiceProvider.ToXmlString(includePrivate);
         }
 
         public string ContainerName()
