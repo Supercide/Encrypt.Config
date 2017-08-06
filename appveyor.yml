@@ -1,9 +1,11 @@
-version: 0.1.0
 # master
 -
   branches:
     only:
       - master 
+
+  version: 0.1.0
+
   skip_tags: true
 
   clone_depth: 1
@@ -33,6 +35,9 @@ version: 0.1.0
   branches:
     except:
       - master
+
+  version: 1.0.{build}-{branch}
+
   skip_tags: true
 
   clone_depth: 1
