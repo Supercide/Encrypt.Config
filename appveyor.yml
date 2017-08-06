@@ -7,6 +7,8 @@
 
   clone_depth: 1
 
+  version: 0.1.0
+
   build:
     parallel: true
     publish_nuget: true
@@ -37,6 +39,8 @@
   skip_tags: true
 
   clone_depth: 1
+
+  version: 0.1.0
 
   build_script:
     - ps: $env:BUILD_VERSION = $env:appveyor_build_version
