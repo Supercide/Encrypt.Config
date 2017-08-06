@@ -16,6 +16,13 @@ namespace Encrypt.Config.Console
     {
         public const string COMMAND_DELIMINATOR = "-";
 
+        private readonly IConsoleStateFactory[] _factories = {
+            new CreateStateFactory(),
+            new EncryptStateFactory(),
+            new ImportStateFactory(),
+            new ExportStateFactory()
+        };
+
         public static void Main(string[] args)
         {
             Dictionary<string, string> context = ToCommands(args);
@@ -87,13 +94,8 @@ namespace Encrypt.Config.Console
 
         public ConsoleState CreateState(string command)
         {
-            IConsoleStateFactory[] factories = new[]
-            {
-                new CreateStateFactory(),
-            };
-
-            return factories.Single(factory => factory.CanParse(command))
-                            .Create();
+            return _factories.Single(factory => factory.CanParse(command))
+                             .Create();
         }
     }
 }
