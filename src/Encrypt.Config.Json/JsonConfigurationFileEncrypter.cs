@@ -22,40 +22,78 @@ namespace Encrypt.Config.Json
             _rng = new RNGCryptoServiceProvider();
         }
 
-        public string Encrypt(string jsonConfigPath)
+        public JObject Encrypt(JObject jsonObject)
         {
-            JsonConfigurationFileParser parser = new JsonConfigurationFileParser();
-            JsonReader reader = new JsonReader();
+            var configurationProperties = GetConfigurationProperties(jsonObject);
 
-            var obj = reader.Read(File.Open(jsonConfigPath, FileMode.Open));
-
-            var parsedJson = parser.Parse(obj);
-
-            foreach (var kvp in parsedJson)
+            foreach (var kvp in configurationProperties)
             {
-                var bytes = Encoding.UTF8.GetBytes(kvp.Value);
-                byte[] salt = new byte[24];
-                _rng.GetBytes(salt);
-                var encryptedBytes = _rsaWrapper.Encrypt(bytes, salt);
+                byte[] salt = GenerateSalt();
 
-                string base64 = Convert.ToBase64String(encryptedBytes);
+                var encodedPropertyValue = Encoding.Unicode.GetBytes(kvp.Value);
+
+                var encryptedValue = _rsaWrapper.Encrypt(encodedPropertyValue, salt);
+
+                string base64 = Convert.ToBase64String(encryptedValue);
+
                 string saltBase64 = Convert.ToBase64String(salt);
 
-                string[] properties = kvp.Key.Split('.');
-
-                JToken current = obj;//[properties[0]];
-
-                for (var i = 0; i < properties.Length; i++)
-                {
-                    current = current[properties[i]];
-                    if (i == properties.Length - 2)
-                    {
-                        current[properties[i + 1]] = $"{base64}.{saltBase64}";
-                    }
-                }
+                UpdateValue(kvp.Key, jsonObject, $"{base64}.{saltBase64}");
             }
 
-           return JsonConvert.SerializeObject(obj);
+            return jsonObject;
+        }
+
+        public JObject Decrypt(JObject jsonObject)
+        {
+            var configurationProperties = GetConfigurationProperties(jsonObject);
+
+            foreach (var kvp in configurationProperties)
+            {
+                var encryptedValueAndSalt = kvp.Value.Split('.');
+
+                byte[] salt = Convert.FromBase64String(encryptedValueAndSalt[1]);
+                byte[] encryptedValue = Convert.FromBase64String(encryptedValueAndSalt[0]);
+
+                var decryptedValue = _rsaWrapper.Decrypt(encryptedValue, salt);
+
+                var propertyValue = Encoding.Unicode.GetString(decryptedValue);
+
+                UpdateValue(kvp.Key, jsonObject, propertyValue);
+            }
+
+            return jsonObject;
+        }
+
+
+        private static IDictionary<string, string> GetConfigurationProperties(JObject obj)
+        {
+            JsonConfigurationFileParser jsonConfigurationFileParser = new JsonConfigurationFileParser();
+            var configurationProperties = jsonConfigurationFileParser.Parse(obj);
+            return configurationProperties;
+        }
+
+        private static void UpdateValue(string path, JObject obj, string value)
+        {
+            string[] propertyPath = path.Split('.');
+
+            JToken current = obj;
+
+            for (var i = 0; i < propertyPath.Length; i++)
+            {
+                current = current[propertyPath[i]];
+                if(i == propertyPath.Length - 2)
+                {
+                    current[propertyPath[i + 1]] = value;
+                }
+            }
+        }
+
+        private byte[] GenerateSalt()
+        {
+            var salt = new byte[24];
+            _rng.GetBytes(salt);
+            return salt;
         }
 
         public void Dispose()
