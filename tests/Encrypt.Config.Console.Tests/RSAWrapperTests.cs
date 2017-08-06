@@ -38,8 +38,6 @@ namespace Encrypt.Config.Console.Tests
                 var rsaExport = rsaContainer.Export(false);
 
                 Assert.That(rsaExport, Is.Not.Null);
-                Assert.That(rsaExport.Key, Is.Not.Null);
-                Assert.That(rsaExport.RsaParameters, Is.Not.Null);
             }
         }
 

@@ -1,13 +1,21 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading;
+using Encrypt.Config.Json;
+using Encrypt.Config.RSA;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Encrypt.Config.Console.Tests
 {
-    // TODO: Don't encrypt and port key in the same opersation, only encrypted with imported public key
+    
+    /*
+     * Help command
+     */
 
     [TestFixture]
     public class ConsoleHostTests
@@ -16,9 +24,11 @@ namespace Encrypt.Config.Console.Tests
 
         public ConsoleHostTests()
         {
-            _files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
-                              .ToArray();
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
+            _files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
+                              .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()))
+                              .ToArray();
         }
 
         [Test]
@@ -36,22 +46,48 @@ namespace Encrypt.Config.Console.Tests
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "TestContainer" , "-jc", "appsettings.json"});
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine"});
+
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine" , "-jc", "appsettings.json"});
 
             FileAssert.Exists("appsettings.encrypted.json");
         }
 
         [Test]
-        public void GivenEncryptedConfig_AndPrivateKey_WhenDecryptingConfigOptionToEncryptConfig_WhenCallingCommand_ThenEncryptsConfig()
+        public void GivenEncryptedFile_WhenDecryptingWithPrivateKey_ThenDecryptsConfig()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "TestContainer", "-jc", "appsettings.json" });
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "WebMachine" });
 
-            FileAssert.Exists("appsettings.encrypted.json");
+            Program.Main(new[] { "-u", $"{currentUser}", "-pbi", "publicKey.xml", "-n", "DeploymentMachine", "-jc", "appsettings.json" });
+            CspParameters cspParams = new CspParameters
+            {
+                KeyContainerName = "WebMachine",
+                KeyNumber = (int)KeyNumber.Exchange,
+                Flags = CspProviderFlags.UseMachineKeyStore | CspProviderFlags.NoPrompt,
+            };
+
+            using (RSACryptoServiceProvider provider = new RSACryptoServiceProvider(cspParams))
+            using (RSAWrapper wrapper = new RSAWrapper(provider))
+            {
+                JsonConfigurationFileEncrypter encrypter = new JsonConfigurationFileEncrypter(wrapper);
+
+                var decryptedConfig = encrypter.Decrypt(JObject.Parse(File.ReadAllText("appsettings.encrypted.json")));
+                var originalConfig = JObject.Parse(File.ReadAllText("appsettings.json"));
+                Assert.That(decryptedConfig.ToString(Formatting.None), Is.EqualTo(originalConfig.ToString(Formatting.None)));
+            }
         }
 
-        [OneTimeTearDown]
+        [Test]
+        public void GivenOptionToEncryptConfig_AndSavePublicKey_WhenCallingCommand_ThenThrowsException()
+        {
+            var currentUser = WindowsIdentity.GetCurrent().Name;
+
+            Assert.Throws<InvalidOperationException>(() => Program.Main(new[] { "-u", $"{currentUser}", "-pbo", "publicKey.xml", "-n", "TestContainer", "-jc", "appsettings.json" }));
+        }
+
+        [TearDown]
         public void CleanUp()
         {
             if(File.Exists("publicKey.xml"))
@@ -59,7 +95,8 @@ namespace Encrypt.Config.Console.Tests
                 File.Delete("publicKey.xml");
             }
 
-            var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys");
+            var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
+                                 .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()));
 
             var newFiles = files.Except(_files);
 
