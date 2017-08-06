@@ -1,12 +1,12 @@
-using System;
-using Encrypt.Config.Console.ConsoleStateMachine.States;
+using Encrypt.Config.ConsoleHost.ConsoleStateMachine.States;
 
-namespace Encrypt.Config.Console.ConsoleStateMachine.Factories {
+namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.Factories {
     public class ExportStateFactory : IConsoleStateFactory
     {
         public bool CanParse(string command)
         {
-            throw new NotImplementedException();
+            return command.ToLower()
+                          .Contains(WellKnownCommands.EXPORT_KEY);
         }
 
         public ConsoleState Create()

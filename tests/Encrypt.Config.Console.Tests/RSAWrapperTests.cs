@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
-using System.Management;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
@@ -52,7 +51,7 @@ namespace Encrypt.Config.Console.Tests
             {
                 var privateKeyExport = rsaContainerOne.Export(true);
                 
-                using (var privateContainer = RSAContainerFactory.CreateFromPublicKey($"{Guid.NewGuid()}", privateKeyExport, User))
+                using (var privateContainer = RSAContainerFactory.CreateFromKey($"{Guid.NewGuid()}", privateKeyExport, User))
                 {
                     var encryptedData = rsaContainerOne.Encrypt(Encoding.Unicode.GetBytes(message), salt);
 

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Encrypt.Config.Console\Encrypt.Config.Console.csproj" />
+    <ProjectReference Include="..\..\src\Encrypt.Config.Console\Encrypt.Config.ConsoleHost.csproj" />
     <ProjectReference Include="..\..\src\Encrypt.Config.RSA\Encrypt.Config.RSA.csproj" />
   </ItemGroup>
 

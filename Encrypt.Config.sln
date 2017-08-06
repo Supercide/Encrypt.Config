@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FC1ACEAE-AF5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{615D7585-6491-478D-A383-00070C580DB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Encrypt.Config.Console", "src\Encrypt.Config.Console\Encrypt.Config.Console.csproj", "{058BC76E-CFBB-42C4-B395-2FA3A6E4BA81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Encrypt.Config.ConsoleHost", "src\Encrypt.Config.Console\Encrypt.Config.ConsoleHost.csproj", "{058BC76E-CFBB-42C4-B395-2FA3A6E4BA81}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Encrypt.Config.Console.Tests", "tests\Encrypt.Config.Console.Tests\Encrypt.Config.Console.Tests.csproj", "{87FDBBC5-2940-4413-970E-4E09D85DEC57}"
 EndProject

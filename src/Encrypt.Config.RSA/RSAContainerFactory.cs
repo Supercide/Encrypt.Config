@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
@@ -33,7 +34,7 @@ namespace Encrypt.Config.RSA {
 
         private static CspParameters CreateCspParamerters(string containerName)
         {
-            CspParameters cspParams = new CspParameters
+            CspParameters cspParams = new CspParameters(1)
             {
                 KeyContainerName = containerName,
                 KeyNumber = (int) KeyNumber.Exchange,
@@ -43,7 +44,7 @@ namespace Encrypt.Config.RSA {
             return cspParams;
         }
 
-        public static RSAWrapper CreateFromPublicKey(string containerName, string publicKey, string username)
+        public static RSAWrapper CreateFromKey(string containerName, string key, string username)
         {
             CspParameters cspParams = CreateCspParamerters(containerName);
 
@@ -51,8 +52,27 @@ namespace Encrypt.Config.RSA {
             {
                 PersistKeyInCsp = true
             };
-            
-            rsaProvider.FromXmlString(publicKey);
+
+            rsaProvider.FromXmlString(key);
+
+            if(rsaProvider.PublicOnly)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return new RSAWrapper(rsaProvider);
+        }
+
+        public static RSAWrapper CreateFromPublicKey(string key)
+        {
+            CspParameters cspParams = CreateCspParamerters($"{Guid.NewGuid()}");
+
+            RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(cspParams)
+            {
+                PersistKeyInCsp = false
+            };
+
+            rsaProvider.FromXmlString(key);
 
             return new RSAWrapper(rsaProvider);
         }

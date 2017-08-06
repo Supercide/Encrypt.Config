@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Encrypt.Config.Console.ConsoleStateMachine;
-using Encrypt.Config.Console.ConsoleStateMachine.Factories;
-using Encrypt.Config.Console.ConsoleStateMachine.States;
-using Encrypt.Config.Json;
-using Encrypt.Config.RSA;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Encrypt.Config.ConsoleHost.ConsoleStateMachine;
+using Encrypt.Config.ConsoleHost.ConsoleStateMachine.Factories;
+using Encrypt.Config.ConsoleHost.ConsoleStateMachine.States;
 
-namespace Encrypt.Config.Console
+namespace Encrypt.Config.ConsoleHost
 {
     public class Program
     {
@@ -19,8 +13,8 @@ namespace Encrypt.Config.Console
 
         private static readonly IConsoleStateFactory[] _factories = {
             new CreateStateFactory(),
+            new CreateContainerStateFactory(), 
             new JsonConfigEncryptionStateFactory(),
-            new ImportStateFactory(),
             new ExportStateFactory()
         };
 
@@ -28,58 +22,17 @@ namespace Encrypt.Config.Console
         {
             var context = ToCommands(args);
 
-            context.Request();
+            do
+            {
+                context.Request();
 
-            /*
-            if (context.ContainsKey(WellKnownCommandArguments.JSON_CONFIGURATION_PATH) && 
-                context.ContainsKey(WellKnownCommandArguments.EXPORT_PUBLIC_KEY))
-            {
-                throw new InvalidOperationException();
-            }
+            } while (context.State.GetType() != typeof(EndState));
 
-            if(context.ContainsKey(WellKnownCommandArguments.PUBLIC_KEY_PATH))
-            {
-                EncryptConfigurationFromPublicKey(context);
-            } else
-            {
-                ExportPublicKey(context);
-            }
-            */
+
+            
         }
 
-        private static void ExportPublicKey(Dictionary<string, string> context)
-        {
-            using (var wrapper = RSAContainerFactory.Create(context[WellKnownCommandArguments.SET_CONTAINER_NAME], context[WellKnownCommandArguments.SET_USERNAME]))
-            {
-                var export = wrapper.Export(false);
-
-                if(context.ContainsKey(WellKnownCommandArguments.EXPORT_PUBLIC_KEY))
-                {
-                    File.WriteAllText(context[WellKnownCommandArguments.EXPORT_PUBLIC_KEY], export);
-                }
-            }
-        }
-
-        private static void EncryptConfigurationFromPublicKey(Dictionary<string, string> commands)
-        {
-            var publicKey = File.ReadAllText(commands[WellKnownCommandArguments.PUBLIC_KEY_PATH]);
-
-            using (var wrapper = RSAContainerFactory.CreateFromPublicKey(commands[WellKnownCommandArguments.SET_CONTAINER_NAME], publicKey, commands[WellKnownCommandArguments.SET_USERNAME]))
-            using (var fileEncrypter = new JsonConfigurationFileEncrypter(wrapper))
-            {
-                if(commands.ContainsKey(WellKnownCommandArguments.JSON_CONFIGURATION_PATH))
-                {
-                    using (var reader = new JsonTextReader(new StreamReader(commands[WellKnownCommandArguments.JSON_CONFIGURATION_PATH])))
-                    {
-                        JObject jsonEncrypted = fileEncrypter.Encrypt(JObject.Load(reader));
-
-                        File.WriteAllText("appsettings.encrypted.json", jsonEncrypted.ToString(Formatting.None));
-                    }
-                }
-            }
-        }
-
-        private static Context ToCommands(string[] args)
+       private static Context ToCommands(string[] args)
         {
             string[] commandsWithArguments = Regex.Split(string.Join(" ", args), "(^-|\\s-)")
                                                   .Where(x => x.Trim() != "-" && !string.IsNullOrWhiteSpace(x))
