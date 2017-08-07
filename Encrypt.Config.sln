@@ -18,8 +18,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CBF0522-5104-4091-A6CA-F332D12384D8}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
 		build.cake = build.cake
 		build.ps1 = build.ps1
+		README.MD = README.MD
 	EndProjectSection
 EndProject
 Global
