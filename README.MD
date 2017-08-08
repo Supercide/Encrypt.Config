@@ -48,4 +48,4 @@ When your keys are created they are stored in a key container located at `C:\Pro
 
 # License
 
-GPLv3
+https://opensource.org/licenses/GPL-3.0
