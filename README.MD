@@ -21,7 +21,7 @@ In production environments, configuration files will more than likely contain se
 
 ## Creating keys & Encrypting configuration
 
-When your keys are created they are stored in a key container located at `C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys`. Only the assigned identity will have access to this container as a access control rule is applied to this container via [NTFS ACL](http://www.ntfs.com/ntfs-permissions-acl-use.htm). 
+When your keys are created they are stored in a key container located at `C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys`. Only the assigned identity will have access to this container as a access control rule is applied to this container via [NTFS ACL](https://msdn.microsoft.com/en-gb/library/windows/desktop/aa374872(v=vs.85).aspx). 
 
 >Key containers provide the most secure way to persist cryptographic keys and keep them secret from malicious third parties. More information on key containers can be found [here](https://msdn.microsoft.com/library/9a179f38-8fb7-4442-964c-fb7b9f39f5b9)
 
