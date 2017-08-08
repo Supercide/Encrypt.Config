@@ -11,11 +11,11 @@ In production environments, configuration files will more than likely contain se
 
 ![Diagram of how it works](./Diagram-How.jpg)
 
-1. First [Create the Private and public keys](#TODO) supplying the identity of the application whose configuration files need to be encrypted
+1. First [Create the Private and public keys](#create-public-and-private-keys-and-store-them-in-a-container) supplying the identity of the application whose configuration files need to be encrypted
 
-2. [Export the public key](#TODO) to a location where the encryption will take place (this may be your deployment server or build server, its typically the place where configuration file transformation happens)
+2. [Export the public key](#export-public-key-from-an-exsiting-container) to a location where the encryption will take place (this may be your deployment server or build server, its typically the place where configuration file transformation happens)
 
-3. After configuration files have been transformed, [encrypt the configuration file](#TODO) with Encrypt.Config using the public key exported in step 2
+3. After configuration files have been transformed, [encrypt the configuration file](#encrypt-json-configuration) with Encrypt.Config using the public key exported in step 2
 
 4. Deploy the configuration file and run the application, everything should work as if the configuration file wasn't encrypted as long as [Decrypt.Config has been set up](#TODO)
 
@@ -29,22 +29,22 @@ When your keys are created they are stored in a key container located at `C:\Pro
 
 ### Create public and private keys and store them in a container:
 
-- `create keys -u <Application_Identity> -n <Name_Of_Key_Container>`
+- `create keys -u <Application Identity> -n <Name Of Key Container>`
 
 ###  Create keys and export public key: 
-- `create keys -u <Application_Identity> -n <Name_Of_Key_Container> -o <Public_Key_Out_Path_And_Filename> -pb` 
+- `create keys -u <Application Identity> -n <Name Of Key Container> -o <Public Key Out Path And Filename> -pb` 
 
 ### Create keys and export public/private key: 
-- `create keys -u <Application_Identity> -n <Name_Of_Key_Container> -o <Public_Key_Out_Path_And_Filename> -pv`
+- `create keys -u <Application Identity> -n <Name Of Key Container> -o <Public Key Out Path And Filename> -pv`
 
 ### Export Public Key from an exsiting container
-- `export key -o <Public_Key_Out_Path_And_Filename> -pb`
+- `export key -o <Public Key Out Path And Filename> -pb`
 
 ### Export Public/Private Key from an exsiting container
-- `export key -o <Public_Key_Out_Path_And_Filename> -pv`
+- `export key -o <Public Key Out Path And Filename> -pv`
 
-### Exncrypt Json Configuration 
-- `encrypt json config -jc <Path_To_Json_File> -i <Path_To_Public_Key>`
+### Encrypt Json Configuration 
+- `encrypt json config -jc <Path To Json File> -i <Path To Public Key>`
 
 # License
 
