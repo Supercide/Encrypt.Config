@@ -5,7 +5,7 @@ JSON Configuration encryption tool
 
 ## What is Encrypt.Config
 
-In production environments, configuration files will more than likely contain sensitive information. Encrypt.Config is a tool designed to help protect JSON based configuration files by encrypting them. When used in combination with [Decrypt.Config](#TODO) an ASP Core application will be able to use encrypted configuration files, decrypting values on access. Encrypt.Config does this by first Creating a public and private key on the machine where you want to store the encrypted configuration file. You then export the public key and use it to encrypt the configuration file. For more information on how this works [click here](#TODO)
+In production environments, configuration files will more than likely contain sensitive information. Encrypt.Config is a tool designed to help protect JSON based configuration files by encrypting them. When used in combination with [Decrypt.Config](#TODO) an ASP Core application will be able to use encrypted configuration files. Encrypt.Config does this by first Creating a public and private key on the machine where you want to store the encrypted configuration file. You then export the public key and use it to encrypt the configuration file. More information on how this works below 
 
 ## How to use
 
@@ -19,22 +19,33 @@ In production environments, configuration files will more than likely contain se
 
 4. Deploy the configuration file and run the application, everything should work as if the configuration file wasn't encrypted as long as [Decrypt.Config has been set up](#TODO)
 
-## Commands
+## Creating keys & Encrypting configuration
 
-### Create public and private keys and store them in a container
+When your keys are created they are stored in a key container located at `C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys`. Only the assigned identity will have access to this container as a access control rule is applied to this container via [NTFS ACL]() . 
 
-`create keys -u <Application_Identity> -n <Name_Of_Key_Container>`
+>Key containers provide the most secure way to persist cryptographic keys and keep them secret from malicious third parties. More information on key containers can be found [here](https://msdn.microsoft.com/library/9a179f38-8fb7-4442-964c-fb7b9f39f5b9)
 
-When your keys are created they are stored in a key container located at `C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys`. Only the assigned identity will have access to this container as a access control rule is applied to this container via [NTFS ACL]() . Key containers provide the most secure way of storing cryptographic keys more information regarding key containers can be found [here](https://msdn.microsoft.com/library/9a179f38-8fb7-4442-964c-fb7b9f39f5b9)
+# Commands
 
-### Create keys and export public key: 
+### Create public and private keys and store them in a container:
 
-The exported public key is used to encrypted the json configuratiopn file, only the private key can decrypt this file.
+- `create keys -u <Application_Identity> -n <Name_Of_Key_Container>`
 
-`create keys -u <Application_Identity> -n <Name_Of_Key_Container> -o <Public_Key_Out_Path_And_Filename>`
+###  Create keys and export public key: 
+- `create keys -u <Application_Identity> -n <Name_Of_Key_Container> -o <Public_Key_Out_Path_And_Filename> -pb` 
 
-the output should generate a file simmilar to the one below
+### Create keys and export public/private key: 
+- `create keys -u <Application_Identity> -n <Name_Of_Key_Container> -o <Public_Key_Out_Path_And_Filename> -pv`
 
-```
+### Export Public Key from an exsiting container
+- `export key -o <Public_Key_Out_Path_And_Filename> -pb`
 
-```
+### Export Public/Private Key from an exsiting container
+- `export key -o <Public_Key_Out_Path_And_Filename> -pv`
+
+### Exncrypt Json Configuration 
+- `encrypt json config -jc <Path_To_Json_File> -i <Path_To_Public_Key>`
+
+# License
+
+GPLv3
