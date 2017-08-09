@@ -4,7 +4,7 @@
     only:
       - master 
 
-  version: 1.1.0
+  version: 1.2.0
 
   skip_tags: true
 
@@ -40,7 +40,7 @@
     except:
       - master
 
-  version: 1.1.0.{build}-{branch}
+  version: 1.2.0.{build}-{branch}
 
   skip_tags: true
 
@@ -55,8 +55,7 @@
     - ps: git config --global user.email "$($env:Git_Email)"
     - ps: git config --global user.name "$($env:Git_Username)"
     - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:Git_Username):$($env:Git_Password)@github.com`n"
-    - ps: git tag $($env:appveyor_build_version) $($env:APPVEYOR_REPO_COMMIT)
-    - git push --tags
+
 
   on_failure:
     - ps: Update-AppveyorBuild -Version "$($env:appveyor_build_version)-$(Get-Date -format HHmmss)-failed"    
