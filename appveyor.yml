@@ -28,7 +28,6 @@
   on_success:
     - ps: $wc = New-Object 'System.Net.WebClient'
     - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
-    - ps: git checkout $($env:APPVEYOR_REPO_BRANCH)
     - ps: git config --global credential.helper store
     - ps: git config --global user.email "$($env:Git_Email)"
     - ps: git config --global user.name "$($env:Git_Username)"
@@ -51,7 +50,6 @@
   on_success:
     - ps: $wc = New-Object 'System.Net.WebClient'
     - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
-    - ps: git checkout $($env:APPVEYOR_REPO_BRANCH)
     - ps: git config --global credential.helper store
     - ps: git config --global user.email "$($env:Git_Email)"
     - ps: git config --global user.name "$($env:Git_Username)"
