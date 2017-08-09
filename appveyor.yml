@@ -10,10 +10,6 @@
 
   clone_depth: 1
 
-  environment:
-    access_token:
-      secure: PytE9zjgZGiorEfI2L64NONCJgy2culgH7VTYsdi+pN8gh03lp06kTnFWSBxNQS5nSz6+0O8vGF/0+/OHLg3XwcIn/ijuiMzjzd0FMs+l1M=
-
   build:
     parallel: true
     publish_nuget: true
@@ -34,11 +30,13 @@
   on_success:
     - ps: $wc = New-Object 'System.Net.WebClient'
     - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
-    - git config --global credential.helper store
-    - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
-    - git config --global user.email "$($env:Git_Email)"
-    - git config --global user.name "$($env:Git_Username)"
-    - ps: git tag $($env:APPVEYOR_BUILD_VERSION) $($env:APPVEYOR_REPO_COMMIT)
+    - ps: git config --global user.email "$($env:Git_Email)"
+    - ps: git config --global user.name "$($env:Git_Username)"
+    - ps: git config --global credential.helper store
+    - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:Git_Username):$($env:Git_Password)@github.com`n"
+    - ps: echo $($env:APPVEYOR_REPO_NAME)
+    - ps: git remote add https://$($env:Git_Username)@github.com/$($env:APPVEYOR_REPO_NAME).git
+    - ps: git tag $($env:appveyor_build_version) $($env:APPVEYOR_REPO_COMMIT)
     - ps: git push --tags --quiet
 
 -
@@ -52,10 +50,6 @@
 
   clone_depth: 1
 
-  environment:
-    access_token:
-      secure: PytE9zjgZGiorEfI2L64NONCJgy2culgH7VTYsdi+pN8gh03lp06kTnFWSBxNQS5nSz6+0O8vGF/0+/OHLg3XwcIn/ijuiMzjzd0FMs+l1M=
-
   build_script:
     - ps: $env:BUILD_VERSION = $env:appveyor_build_version
     - ps: .\build.ps1
@@ -63,11 +57,13 @@
   on_success:
     - ps: $wc = New-Object 'System.Net.WebClient'
     - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
-    - git config --global credential.helper store
-    - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
-    - git config --global user.email "$($env:Git_Email)"
-    - git config --global user.name "$($env:Git_Username)"
-    - ps: git tag $($env:APPVEYOR_BUILD_VERSION) $($env:APPVEYOR_REPO_COMMIT)
+    - ps: git config --global user.email "$($env:Git_Email)"
+    - ps: git config --global user.name "$($env:Git_Username)"
+    - ps: git config --global credential.helper store
+    - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:Git_Username):$($env:Git_Password)@github.com`n"
+    - ps: echo $($env:APPVEYOR_REPO_NAME)
+    - ps: git remote add https://$($env:Git_Username)@github.com/$($env:APPVEYOR_REPO_NAME).git
+    - ps: git tag $($env:appveyor_build_version) $($env:APPVEYOR_REPO_COMMIT)
     - ps: git push --tags --quiet
 
   on_failure:
