@@ -34,7 +34,7 @@
     - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
     - git config --global user.email "$($env:Git_Email)"
     - git config --global user.name "$($env:Git_Username)"
-    - git tag $($env:appveyor_build_version) ($env:APPVEYOR_REPO_COMMIT)
+    - ps: git tag $($env:APPVEYOR_BUILD_VERSION) $($env:APPVEYOR_REPO_COMMIT)
     - git push --tags --quiet 
 
 -
@@ -59,7 +59,7 @@
     - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
     - git config --global user.email "$($env:Git_Email)"
     - git config --global user.name "$($env:Git_Username)"
-    - git tag $($env:appveyor_build_version) ($env:APPVEYOR_REPO_COMMIT)
+    - ps: git tag $($env:APPVEYOR_BUILD_VERSION) $($env:APPVEYOR_REPO_COMMIT)
     - git push --tags --quiet 
 
   on_failure:
