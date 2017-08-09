@@ -29,9 +29,9 @@
     - ps: $wc = New-Object 'System.Net.WebClient'
     - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
     - ps: git checkout $($env:APPVEYOR_REPO_BRANCH)
+    - ps: git config --global credential.helper store
     - ps: git config --global user.email "$($env:Git_Email)"
     - ps: git config --global user.name "$($env:Git_Username)"
-    - ps: git config --global credential.helper store
     - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:Git_Username):$($env:Git_Password)@github.com`n"
     - ps: git push --tags
 
@@ -52,9 +52,9 @@
     - ps: $wc = New-Object 'System.Net.WebClient'
     - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
     - ps: git checkout $($env:APPVEYOR_REPO_BRANCH)
+    - ps: git config --global credential.helper store
     - ps: git config --global user.email "$($env:Git_Email)"
     - ps: git config --global user.name "$($env:Git_Username)"
-    - ps: git config --global credential.helper store
     - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:Git_Username):$($env:Git_Password)@github.com`n"
     - ps: git push --tags
 
