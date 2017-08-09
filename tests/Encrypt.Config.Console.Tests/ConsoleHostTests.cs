@@ -55,7 +55,7 @@ namespace Encrypt.Config.Console.Tests
             var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys");
 
             var containerFile = files.Except(_files).Single();
-
+            
             var controlList = File.GetAccessControl(containerFile);
 
             var accessRule = controlList.GetAccessRules(true, true, typeof(NTAccount))
