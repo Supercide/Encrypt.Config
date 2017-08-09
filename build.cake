@@ -83,13 +83,8 @@ Task("Test")
 // TAG
 ///////////////////////////////////////////////////////////////////////////////
 
-Task("Tag")
-	.IsDependentOn("Test")
-	.Does(() => {
-		GitTag("./", semVersion);
-	});
 
 Task("Default")
-    .IsDependentOn("Tag");
+    .IsDependentOn("Test");
 
 RunTarget(target);
