@@ -1,3 +1,4 @@
+#addin nuget:?package=Cake.Git
 #tool "nuget:?package=NUnit.ConsoleRunner"
 
 var target = Argument("target", "Default");
@@ -79,10 +80,16 @@ Task("Test")
     });
 
 ///////////////////////////////////////////////////////////////////////////////
-// TESTS
+// TAG
 ///////////////////////////////////////////////////////////////////////////////
 
+Task("Tag")
+	.IsDependentOn("Test")
+	.Does(() => {
+		GitTag("./", semVersion);
+	});
+
 Task("Default")
-    .IsDependentOn("Test");
+    .IsDependentOn("Tag");
 
 RunTarget(target);
