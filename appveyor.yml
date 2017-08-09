@@ -34,8 +34,6 @@
     - ps: git config --global user.name "$($env:Git_Username)"
     - ps: git config --global credential.helper store
     - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:Git_Username):$($env:Git_Password)@github.com`n"
-    - ps: echo $($env:APPVEYOR_REPO_NAME)
-    - ps: git remote add https://$($env:Git_Username)@github.com/$($env:APPVEYOR_REPO_NAME).git
     - ps: git tag $($env:appveyor_build_version) $($env:APPVEYOR_REPO_COMMIT)
     - ps: git push --tags --quiet
 
@@ -61,8 +59,6 @@
     - ps: git config --global user.name "$($env:Git_Username)"
     - ps: git config --global credential.helper store
     - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:Git_Username):$($env:Git_Password)@github.com`n"
-    - ps: echo $($env:APPVEYOR_REPO_NAME)
-    - ps: git remote add https://$($env:Git_Username)@github.com/$($env:APPVEYOR_REPO_NAME).git
     - ps: git tag $($env:appveyor_build_version) $($env:APPVEYOR_REPO_COMMIT)
     - ps: git push --tags --quiet
 
