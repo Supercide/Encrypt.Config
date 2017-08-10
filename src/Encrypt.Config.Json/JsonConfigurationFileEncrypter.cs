@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Encrypt.Config.RSA;
@@ -9,12 +10,12 @@ namespace Encrypt.Config.Json
 {
     public class JsonConfigurationFileEncrypter : IDisposable
     {
-        private readonly RSAWrapper _rsaWrapper;
+        private readonly RSACryptoServiceProvider _rsaCryptoServiceProvider;
         private readonly RandomNumberGenerator _rng;
 
-        public JsonConfigurationFileEncrypter(RSAWrapper RSAWrapper)
+        public JsonConfigurationFileEncrypter(RSACryptoServiceProvider rsaCryptoServiceProvider)
         {
-            _rsaWrapper = RSAWrapper;
+            _rsaCryptoServiceProvider = rsaCryptoServiceProvider;
             _rng = new RNGCryptoServiceProvider();
         }
 
@@ -28,7 +29,7 @@ namespace Encrypt.Config.Json
 
                 var encodedPropertyValue = Encoding.Unicode.GetBytes(kvp.Value);
 
-                var encryptedValue = _rsaWrapper.Encrypt(encodedPropertyValue, salt);
+                var encryptedValue = _rsaCryptoServiceProvider.Encrypt(salt.Concat(encodedPropertyValue).ToArray(), RSAEncryptionPadding.Pkcs1);
 
                 string base64 = Convert.ToBase64String(encryptedValue);
 
@@ -51,7 +52,7 @@ namespace Encrypt.Config.Json
                 byte[] salt = Convert.FromBase64String(encryptedValueAndSalt[1]);
                 byte[] encryptedValue = Convert.FromBase64String(encryptedValueAndSalt[0]);
 
-                var decryptedValue = _rsaWrapper.Decrypt(encryptedValue, salt);
+                var decryptedValue = _rsaCryptoServiceProvider.Decrypt(encryptedValue, RSAEncryptionPadding.Pkcs1).Skip(salt.Length).ToArray();
 
                 var propertyValue = Encoding.Unicode.GetString(decryptedValue);
 
@@ -94,7 +95,7 @@ namespace Encrypt.Config.Json
 
         public void Dispose()
         {
-            _rsaWrapper?.Dispose();
+            _rsaCryptoServiceProvider?.Dispose();
             _rng?.Dispose();
         }
     }

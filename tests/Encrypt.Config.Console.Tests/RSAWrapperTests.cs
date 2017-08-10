@@ -34,7 +34,7 @@ namespace Encrypt.Config.Console.Tests
 
             using (var rsaContainer = RSAContainerFactory.Create(containerName, User))
             {
-                var rsaExport = rsaContainer.Export(false);
+                var rsaExport = rsaContainer.ToXmlString(false);
 
                 Assert.That(rsaExport, Is.Not.Null);
             }
@@ -49,13 +49,13 @@ namespace Encrypt.Config.Console.Tests
 
             using (var rsaContainerOne = RSAContainerFactory.Create($"{Guid.NewGuid()}", User))
             {
-                var privateKeyExport = rsaContainerOne.Export(true);
+                var privateKeyExport = rsaContainerOne.ToXmlString(true);
                 
                 using (var privateContainer = RSAContainerFactory.CreateFromKey($"{Guid.NewGuid()}", privateKeyExport, User))
                 {
-                    var encryptedData = rsaContainerOne.Encrypt(Encoding.Unicode.GetBytes(message), salt);
+                    var encryptedData = rsaContainerOne.Encrypt(Encoding.Unicode.GetBytes(message),RSAEncryptionPadding.Pkcs1, salt);
 
-                    var decryptedData = privateContainer.Decrypt(encryptedData, salt);
+                    var decryptedData = privateContainer.Decrypt(encryptedData, RSAEncryptionPadding.Pkcs1, salt);
 
                     var actualMessage = Encoding.Unicode.GetString(decryptedData);
 
@@ -88,9 +88,9 @@ namespace Encrypt.Config.Console.Tests
         {
             var containerName = $"{Guid.NewGuid()}";
 
-            using (var wrapper = RSAContainerFactory.Create(containerName, User))
+            using (var rsaCryptoServiceProvider = RSAContainerFactory.Create(containerName, User))
             {
-                var path = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", wrapper.UniqueContainerName());
+                var path = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", rsaCryptoServiceProvider.CspKeyContainerInfo.UniqueKeyContainerName);
 
                 FileSecurity fSecurity = new FileSecurity(path, AccessControlSections.Access);
 
@@ -113,22 +113,10 @@ namespace Encrypt.Config.Console.Tests
         [Test]
         public void GivenContainerName_WhenCreatingContainer_CreatesContainer_WithName()
         {
-            using (var rsaContainer = RSAContainerFactory.Create($"{Guid.NewGuid()}", User))
+            var containerName = $"{Guid.NewGuid()}";
+            using (var rsaCryptoServiceProvider = RSAContainerFactory.Create(containerName, User))
             {
-                CspKeyContainerInfo container = LoadCspKeyContainerInfo(rsaContainer.ContainerName());
-
-                Assert.That(rsaContainer.ContainerName(), Is.EqualTo(container.KeyContainerName));
-            }
-        }
-
-        [Test]
-        public void GivenValidData_WhenCreatingContainer_ThenReturnsUniqueName()
-        {
-            using (var rsaContainer = RSAContainerFactory.Create($"{Guid.NewGuid()}", User))
-            {
-                CspKeyContainerInfo container = LoadCspKeyContainerInfo(rsaContainer.ContainerName());
-
-                Assert.That(rsaContainer.UniqueContainerName, Is.EqualTo(container.UniqueKeyContainerName));
+                Assert.That(rsaCryptoServiceProvider.CspKeyContainerInfo.KeyContainerName, Is.EqualTo(containerName));
             }
         }
 

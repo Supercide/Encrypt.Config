@@ -45,7 +45,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RSAContainerFactory.cs" />
-    <Compile Include="RSAWrapper.cs" />
+    <Compile Include="RSACryptoServiceProviderExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

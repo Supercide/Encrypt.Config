@@ -2,11 +2,12 @@ using System;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Encrypt.Config.RSA {
     public class RSAContainerFactory
     {
-        public static RSAWrapper Create(string containerName, string username)
+        public static RSACryptoServiceProvider Create(string containerName, string username)
         {
             var cspParams = CreateCspParamerters(containerName);
 
@@ -15,11 +16,9 @@ namespace Encrypt.Config.RSA {
                 PersistKeyInCsp = true
             };
 
-            RSAWrapper wrapper = new RSAWrapper(rsaProvider);
-
             SetFileAccessRule(username, rsaProvider.CspKeyContainerInfo.UniqueKeyContainerName);
 
-            return wrapper;
+            return rsaProvider;
         }
 
         private static void SetFileAccessRule(string username, string uniqueKeyContainerName)
@@ -44,7 +43,7 @@ namespace Encrypt.Config.RSA {
             return cspParams;
         }
 
-        public static RSAWrapper CreateFromKey(string containerName, string key, string username)
+        public static RSACryptoServiceProvider CreateFromKey(string containerName, string key, string username)
         {
             CspParameters cspParams = CreateCspParamerters(containerName);
 
@@ -60,10 +59,10 @@ namespace Encrypt.Config.RSA {
                 throw new InvalidOperationException();
             }
 
-            return new RSAWrapper(rsaProvider);
+            return rsaProvider;
         }
 
-        public static RSAWrapper CreateFromPublicKey(string key)
+        public static RSACryptoServiceProvider CreateFromPublicKey(string key)
         {
             CspParameters cspParams = CreateCspParamerters($"{Guid.NewGuid()}");
 
@@ -74,7 +73,7 @@ namespace Encrypt.Config.RSA {
 
             rsaProvider.FromXmlString(key);
 
-            return new RSAWrapper(rsaProvider);
+            return rsaProvider;
         }
     }
 }

@@ -136,11 +136,9 @@ namespace Encrypt.Config.Console.Tests
 
         public JObject DecryptFile(string containerName)
         {
-            var provider = LoadContainer(containerName);
-
-            using (RSAWrapper wrapper = new RSAWrapper(provider))
+            using (var provider = LoadContainer(containerName))
             {
-                JsonConfigurationFileEncrypter encrypter = new JsonConfigurationFileEncrypter(wrapper);
+                JsonConfigurationFileEncrypter encrypter = new JsonConfigurationFileEncrypter(provider);
 
                 return encrypter.Decrypt(JObject.Parse(File.ReadAllText("appsettings.encrypted.json")));
             }

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Security.Cryptography;
 using Encrypt.Config.Json;
 using Encrypt.Config.RSA;
 using Newtonsoft.Json;
@@ -12,7 +13,7 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
         {
             try
             {
-                using (RSAWrapper wrapper = CreateContainer(context))
+                using (RSACryptoServiceProvider wrapper = CreateContainer(context))
                 {
                     string path;
                     if(!context.Arguments.TryGetValue(WellKnownCommandArguments.JSON_CONFIGURATION_PATH, out path))
@@ -38,7 +39,7 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
             }
         }
 
-        private static RSAWrapper CreateContainer(Context context)
+        private static RSACryptoServiceProvider CreateContainer(Context context)
         {
             string keyPath;
             if(!context.Arguments.TryGetValue(WellKnownCommandArguments.IMPORT_KEY, out keyPath))
