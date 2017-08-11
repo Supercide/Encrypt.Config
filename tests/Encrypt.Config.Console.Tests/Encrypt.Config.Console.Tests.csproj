@@ -55,6 +55,10 @@
       <Project>{D4C72C5C-6851-4B7E-8DB1-DF62DC991091}</Project>
       <Name>Encrypt.Config.ConsoleHost</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Encrypt.Config.Encryption\Encrypt.Config.Encryption.csproj">
+      <Project>{32CAF4FC-2216-4964-946B-5E3EA7AAA849}</Project>
+      <Name>Encrypt.Config.Encryption</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Encrypt.Config.Json\Encrypt.Config.Json.csproj">
       <Project>{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}</Project>
       <Name>Encrypt.Config.Json</Name>

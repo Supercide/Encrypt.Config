@@ -5,9 +5,11 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using Encrypt.Config.ConsoleHost;
+using Encrypt.Config.Encryption.Asymmetric;
+using Encrypt.Config.Encryption.Random;
+using Encrypt.Config.Encryption.RSA;
+using Encrypt.Config.Encryption.Symmetric;
 using Encrypt.Config.Json;
-using Encrypt.Config.RSA;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -136,12 +138,9 @@ namespace Encrypt.Config.Console.Tests
 
         public JObject DecryptFile(string containerName)
         {
-            using (var provider = LoadContainer(containerName))
-            {
-                JsonConfigurationFileEncrypter encrypter = new JsonConfigurationFileEncrypter(provider);
+                JsonConfigurationFileEncrypter encrypter = new JsonConfigurationFileEncrypter(new HybridEncryption(new RSAEncryption(containerName), new AESEncryption()), new RNGCryptoRandomBytesGenerator());
 
                 return encrypter.Decrypt(JObject.Parse(File.ReadAllText("appsettings.encrypted.json")));
-            }
         }
 
         private static RSACryptoServiceProvider LoadContainer(string containerName)

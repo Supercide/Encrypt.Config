@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Encrypt.Config.RSA;
+using Encrypt.Config.Encryption.RSA;
 
 namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
     public class CreateKeysState : ConsoleState {
@@ -19,21 +19,20 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
                 throw new InvalidOperationException();
             }
 
-            var rsaWrapper = RSAContainerFactory.Create(containerName, username);
+            var rsaEncryption = new RSAEncryption(containerName, username);
+
             try
             {
                 if(context.Arguments.Any(kvp => kvp.Key == WellKnownCommandArguments.EXPORT_KEY))
                 {
-                    context.State = ExportState.CreateWithContainer(rsaWrapper);
+                    context.State = ExportState.CreateWithContainer(rsaEncryption);
                 } else
                 {
-                    rsaWrapper.Dispose();
                     SetEndState(context);
                 }
 
             } catch(Exception e)
             {
-                rsaWrapper.Dispose();
                 Console.WriteLine(e.Message);
                 throw;
             }

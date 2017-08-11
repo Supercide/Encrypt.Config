@@ -51,6 +51,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Encrypt.Config.Encryption\Encrypt.Config.Encryption.csproj">
+      <Project>{32caf4fc-2216-4964-946b-5e3ea7aaa849}</Project>
+      <Name>Encrypt.Config.Encryption</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Encrypt.Config.RSA\Encrypt.Config.RSA.csproj">
       <Project>{1475C531-0697-42A2-B2F0-1A35A14EAB0B}</Project>
       <Name>Encrypt.Config.RSA</Name>

@@ -47,8 +47,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="ConsoleStateMachine\Context.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\CreateContainerState.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\CreateContainerStateFactory.cs" />
     <Compile Include="ConsoleStateMachine\Factories\CreateStateFactory.cs" />
     <Compile Include="ConsoleStateMachine\Factories\ExportStateFactory.cs" />
     <Compile Include="ConsoleStateMachine\Factories\IConsoleStateFactory.cs" />
@@ -64,6 +62,10 @@
     <Compile Include="WellKnownCommandArguments.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Encrypt.Config.Encryption\Encrypt.Config.Encryption.csproj">
+      <Project>{32CAF4FC-2216-4964-946B-5E3EA7AAA849}</Project>
+      <Name>Encrypt.Config.Encryption</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Encrypt.Config.Json\Encrypt.Config.Json.csproj">
       <Project>{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}</Project>
       <Name>Encrypt.Config.Json</Name>

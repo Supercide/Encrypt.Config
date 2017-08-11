@@ -3,39 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Encrypt.Config.RSA;
+using Encrypt.Config.Encryption.Asymmetric;
+using Encrypt.Config.Encryption.Random;
 using Newtonsoft.Json.Linq;
+using Encrypt.Config.Encryption.Symmetric;
 
 namespace Encrypt.Config.Json
 {
-    public class JsonConfigurationFileEncrypter : IDisposable
+    public class JsonConfigurationFileEncrypter
     {
-        private readonly RSACryptoServiceProvider _rsaCryptoServiceProvider;
-        private readonly RandomNumberGenerator _rng;
+        private readonly IHybridEncryption _hybridEncryption;
+        private IGenerateRandomBytes _randomBytesGenerator;
 
-        public JsonConfigurationFileEncrypter(RSACryptoServiceProvider rsaCryptoServiceProvider)
+        public JsonConfigurationFileEncrypter(IHybridEncryption hybridEncryption, IGenerateRandomBytes randomBytesGenerator)
         {
-            _rsaCryptoServiceProvider = rsaCryptoServiceProvider;
-            _rng = new RNGCryptoServiceProvider();
+            _hybridEncryption = hybridEncryption;
+
+            _randomBytesGenerator = randomBytesGenerator;
         }
 
-        public JObject Encrypt(JObject jsonObject)
+        public JObject Encrypt(JObject jsonObject, string publicKey)
         {
             var configurationProperties = GetConfigurationProperties(jsonObject);
 
             foreach (var kvp in configurationProperties)
             {
-                byte[] salt = GenerateSalt();
+                var data = Encoding.Unicode.GetBytes(kvp.Value);
 
-                var encodedPropertyValue = Encoding.Unicode.GetBytes(kvp.Value);
+                var sessionKey = _randomBytesGenerator.Generate(32);
+                var iv = _randomBytesGenerator.Generate(16);
 
-                var encryptedValue = _rsaCryptoServiceProvider.Encrypt(salt.Concat(encodedPropertyValue).ToArray(), RSAEncryptionPadding.Pkcs1);
+                var encryptedValue = _hybridEncryption.EncryptData(sessionKey, data, iv, publicKey);
 
-                string base64 = Convert.ToBase64String(encryptedValue);
+                string base64Data = Convert.ToBase64String(encryptedValue.Data);
+                string base64Hash = Convert.ToBase64String(encryptedValue.HmacHash);
+                string base64Key = Convert.ToBase64String(encryptedValue.SessionKey);
+                string base64IV = Convert.ToBase64String(encryptedValue.IV);
 
-                string saltBase64 = Convert.ToBase64String(salt);
-
-                UpdateValue(kvp.Key, jsonObject, $"{base64}.{saltBase64}");
+                UpdateValue(kvp.Key, jsonObject, $"{base64Data}.{base64Hash}.{base64Key}.{base64IV}");
             }
 
             return jsonObject;
@@ -47,12 +52,14 @@ namespace Encrypt.Config.Json
 
             foreach (var kvp in configurationProperties)
             {
-                var encryptedValueAndSalt = kvp.Value.Split('.');
+                var encryptedData = kvp.Value.Split('.');
 
-                byte[] salt = Convert.FromBase64String(encryptedValueAndSalt[1]);
-                byte[] encryptedValue = Convert.FromBase64String(encryptedValueAndSalt[0]);
+                var base64Data = Convert.FromBase64String(encryptedData[0]);
+                var base64Hash = Convert.FromBase64String(encryptedData[1]);
+                var base64Key = Convert.FromBase64String(encryptedData[2]);
+                var base64IV = Convert.FromBase64String(encryptedData[3]);
 
-                var decryptedValue = _rsaCryptoServiceProvider.Decrypt(encryptedValue, RSAEncryptionPadding.Pkcs1).Skip(salt.Length).ToArray();
+                var decryptedValue = _hybridEncryption.DecryptData(new EncryptedData(base64Key, base64Data, base64IV, base64Hash));
 
                 var propertyValue = Encoding.Unicode.GetString(decryptedValue);
 
@@ -84,19 +91,6 @@ namespace Encrypt.Config.Json
                     current[propertyPath[i + 1]] = value;
                 }
             }
-        }
-
-        private byte[] GenerateSalt()
-        {
-            var salt = new byte[24];
-            _rng.GetBytes(salt);
-            return salt;
-        }
-
-        public void Dispose()
-        {
-            _rsaCryptoServiceProvider?.Dispose();
-            _rng?.Dispose();
         }
     }
 }

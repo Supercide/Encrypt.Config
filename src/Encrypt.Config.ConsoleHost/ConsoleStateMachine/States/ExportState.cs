@@ -1,12 +1,12 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
-using Encrypt.Config.RSA;
+using Encrypt.Config.Encryption.RSA;
 
 namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
     public class ExportState : ConsoleState {
 
-        private RSACryptoServiceProvider _rsaCryptoServiceProvider;
+        private RSAEncryption _rsaEncryption;
 
         public ExportState()
         {
@@ -30,9 +30,9 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
                     throw new InvalidOperationException();
                 }
 
-                var rsaParameters = _rsaCryptoServiceProvider.ToXmlString(exportPrivateKey);
+                var keyData = _rsaEncryption.ExportKey(exportPrivateKey);
 
-                File.WriteAllText(filePath, rsaParameters);
+                File.WriteAllText(filePath, keyData);
 
                 SetEndState(context);
 
@@ -40,17 +40,14 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
             {
                 Console.WriteLine(e);
                 throw;
-            } finally
-            {
-                _rsaCryptoServiceProvider.Dispose();
             }
         }
 
-        public static ExportState CreateWithContainer(RSACryptoServiceProvider rsaCryptoServiceProvider)
+        public static ExportState CreateWithContainer(RSAEncryption rsaEncryption)
         {
             var state = new ExportState
             {
-                _rsaCryptoServiceProvider = rsaCryptoServiceProvider
+                _rsaEncryption = rsaEncryption
             };
 
             return state;

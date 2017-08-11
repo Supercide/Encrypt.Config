@@ -7,7 +7,7 @@ using NUnit.Framework;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
-using Encrypt.Config.RSA;
+using Encrypt.Config.Encryption.RSA;
 
 namespace Encrypt.Config.Console.Tests
 {
@@ -31,37 +31,11 @@ namespace Encrypt.Config.Console.Tests
         public void GivenValidData_WhenCreatingContainer_ThenReturnsExportKey()
         {
             var containerName = $"{Guid.NewGuid()}";
+            RSAEncryption encryption = new RSAEncryption();
 
-            using (var rsaContainer = RSAContainerFactory.Create(containerName, User))
-            {
-                var rsaExport = rsaContainer.ToXmlString(false);
+                var rsaExport = encryption.ExportKey(false);
 
                 Assert.That(rsaExport, Is.Not.Null);
-            }
-        }
-
-        [Test]
-        public void GivenDataEncryptedWithPublicKey_WhenDecryptingDataFromPrivateKey_ThenDecryptsData()
-        {
-            var salt = new byte[]{1,4,3,2,5,3,2};
-
-            string message = "Secret message";
-
-            using (var rsaContainerOne = RSAContainerFactory.Create($"{Guid.NewGuid()}", User))
-            {
-                var privateKeyExport = rsaContainerOne.ToXmlString(true);
-                
-                using (var privateContainer = RSAContainerFactory.CreateFromKey($"{Guid.NewGuid()}", privateKeyExport, User))
-                {
-                    var encryptedData = rsaContainerOne.Encrypt(Encoding.Unicode.GetBytes(message),RSAEncryptionPadding.Pkcs1, salt);
-
-                    var decryptedData = privateContainer.Decrypt(encryptedData, RSAEncryptionPadding.Pkcs1, salt);
-
-                    var actualMessage = Encoding.Unicode.GetString(decryptedData);
-
-                    Assert.That(actualMessage, Is.EqualTo(message));
-                }
-            }
         }
 
         [Test]
@@ -69,18 +43,19 @@ namespace Encrypt.Config.Console.Tests
         {
             var keyContainerName = $"{Guid.NewGuid()}";
 
-            using (RSAContainerFactory.Create(keyContainerName, User))
-            {
-                var container = LoadCspKeyContainerInfo(keyContainerName);
+            var rsaEncryption = new RSAEncryption(keyContainerName, User);
 
-                var rule = container.CryptoKeySecurity.GetAccessRules(true, true, typeof(NTAccount))
-                                    .Cast<AuthorizationRule>()
-                                    .SingleOrDefault();
+            rsaEncryption.ExportKey(false);
 
-                Assert.That(rule, Is.Not.Null);
+            var container = LoadCspKeyContainerInfo(keyContainerName);
 
-                Assert.That(rule.IdentityReference.Value, Is.EqualTo(User));
-            }
+            var rule = container.CryptoKeySecurity.GetAccessRules(true, true, typeof(NTAccount))
+                                .Cast<AuthorizationRule>()
+                                .SingleOrDefault();
+
+            Assert.That(rule, Is.Not.Null);
+
+            Assert.That(rule.IdentityReference.Value, Is.EqualTo(User));
         }
 
         [Test]
@@ -88,9 +63,16 @@ namespace Encrypt.Config.Console.Tests
         {
             var containerName = $"{Guid.NewGuid()}";
 
-            using (var rsaCryptoServiceProvider = RSAContainerFactory.Create(containerName, User))
+            var rsaEncryption = new RSAEncryption(containerName, User);
+
+            var rsaCryptoServiceProvider = new RSACryptoServiceProvider(new CspParameters()
             {
-                var path = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", rsaCryptoServiceProvider.CspKeyContainerInfo.UniqueKeyContainerName);
+                KeyContainerName = containerName
+            });
+
+            rsaEncryption.ExportKey(false);
+
+            var path = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", rsaCryptoServiceProvider.CspKeyContainerInfo.UniqueKeyContainerName);
 
                 FileSecurity fSecurity = new FileSecurity(path, AccessControlSections.Access);
 
@@ -107,19 +89,10 @@ namespace Encrypt.Config.Console.Tests
                 Assert.That(rights.Count(), Is.EqualTo(2));
                 Assert.That(rights.Any(systemRights => systemRights == FileSystemRights.Read));
                 Assert.That(rights.Any(systemRights => systemRights == FileSystemRights.Synchronize));
-            }
+            
         }
 
-        [Test]
-        public void GivenContainerName_WhenCreatingContainer_CreatesContainer_WithName()
-        {
-            var containerName = $"{Guid.NewGuid()}";
-            using (var rsaCryptoServiceProvider = RSAContainerFactory.Create(containerName, User))
-            {
-                Assert.That(rsaCryptoServiceProvider.CspKeyContainerInfo.KeyContainerName, Is.EqualTo(containerName));
-            }
-        }
-
+        
         private static CspKeyContainerInfo LoadCspKeyContainerInfo(string keyContainerName)
         {
             CspParameters cp = new CspParameters

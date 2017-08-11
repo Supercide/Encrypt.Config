@@ -13,7 +13,6 @@ namespace Encrypt.Config.ConsoleHost
 
         private static readonly IConsoleStateFactory[] _factories = {
             new CreateStateFactory(),
-            new CreateContainerStateFactory(), 
             new JsonConfigEncryptionStateFactory(),
             new ExportStateFactory()
         };
