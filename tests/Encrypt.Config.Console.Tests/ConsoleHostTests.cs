@@ -31,22 +31,68 @@ namespace Encrypt.Config.Console.Tests
                               .ToArray();
         }
 
+        /*
+         * sets ACL
+         */
+
         [Test]
-        public void GivenCreateKeysCommand_WithKeyOutArgumentSupplied_WhenCreatingKeys_ThenExportsPublicKey()
+        public void GivenCommandToExportKey_WhenCallingCommand_ThenExportsPublicKey()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new []{"create", "keys",
-                                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                                $"-{WellKnownCommandArguments.EXPORT_KEY}", "publicKey.xml",
-                                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
+            Program.Main(new[]{"create", "keys",
+                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
+                $"-{WellKnownCommandArguments.EXPORT_KEY}", "key",
+                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
 
-            FileAssert.Exists("publicKey.xml");
+            FileAssert.Exists("key");
         }
 
         [Test]
-        public void GivenCreateKeysCommand_WithNoOptionalArguments_WhenCreatingKeys_ThenCreatesKeyForUsername()
+        public void GivenCommandToExportKey_WhenCallingCommand_ThenExportsPublicKey_WithEncryptedSessionKey()
+        {
+            var currentUser = WindowsIdentity.GetCurrent().Name;
+
+            Program.Main(new[]{"create", "keys",
+                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
+                $"-{WellKnownCommandArguments.EXPORT_KEY}", "key",
+                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
+
+            Assert.Fail();
+        }
+
+        [Test]
+        public void GivenCommandToExportKey_WhenCallingCommand_ThenExportsPublicKey_WithIV()
+        {
+            var currentUser = WindowsIdentity.GetCurrent().Name;
+
+            Program.Main(new[]{"create", "keys",
+                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
+                $"-{WellKnownCommandArguments.EXPORT_KEY}", "key",
+                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
+
+            Assert.Fail();
+        }
+
+        [Test]
+        public void GivenCommandToExportKey_WhenCallingCommand_ThenExportsPublicKey_WithHMAC()
+        {
+            var currentUser = WindowsIdentity.GetCurrent().Name;
+
+            Program.Main(new[]{"create", "keys",
+                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
+                $"-{WellKnownCommandArguments.EXPORT_KEY}", "key",
+                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
+
+            Assert.Fail();
+        }
+
+       [Test]
+        public void GivenCreateKeysCommand_WhenCreatingKeys_ThenSetsACLOnKeyContainer()
         {
             var currentUser = WindowsIdentity.GetCurrent().Name;
 
@@ -65,110 +111,6 @@ namespace Encrypt.Config.Console.Tests
                                          .Single();
 
             Assert.That(accessRule.IdentityReference.Value, Is.EqualTo(currentUser));
-        }
-
-        [Test]
-        public void GivenEncryptJsonConfigCommand_WithImportPublicKey_WhenEncryptingConfig_ThenEncryptsConfigWithPublicKey()
-        {
-            var currentUser = WindowsIdentity.GetCurrent().Name;
-
-            Program.Main(new[] { "create", "keys",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", "publicKey.xml",
-                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
-
-            Program.Main(new[] { "encrypt","json","config",
-                $"-{WellKnownCommandArguments.IMPORT_KEY}", "publicKey.xml",
-                $"-{WellKnownCommandArguments.JSON_CONFIGURATION_PATH}", "appsettings.json"});
-
-            var decryptedConfig = DecryptFile("TestContainer");
-
-            FileAssert.Exists("appsettings.encrypted.json");
-
-            Assert.That(decryptedConfig.ToString(), Is.EqualTo(JObject.Parse(File.ReadAllText("appsettings.json")).ToString()));
-        }
-
-        [Test]
-        public void GivenCreateContainerCommand_WithKeyContainingPublicAndPrivateKeys_WhenCreatingContainer_ThenCreatesContainer_WithPublicAndPrivateKeys()
-        {
-            var currentUser = WindowsIdentity.GetCurrent().Name;
-            var expectedKeyFile = "expectedKey.xml";
-
-            Program.Main(new[]{"create", "keys",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", expectedKeyFile,
-                $"-{WellKnownCommandArguments.EXPORT_PRIVATE_KEY}",
-                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
-
-            var containerWithImportedKeys = "ContainerWithImportedKeys";
-
-            Program.Main(new[]{"create", "container",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{WellKnownCommandArguments.IMPORT_KEY}", expectedKeyFile,
-                $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerWithImportedKeys});
-
-            var provider = LoadContainer(containerWithImportedKeys);
-
-            var actualImportedKey = provider.ToXmlString(true);
-            var expectedKey = File.ReadAllText(expectedKeyFile);
-
-            Assert.That(actualImportedKey, Is.EqualTo(expectedKey));
-        }
-
-        [Test]
-        public void GivenCreateContainerCommand_WithKeyOnlyPublicKey_WhenCreatingContainer_ThenThrowsException()
-        {
-            var currentUser = WindowsIdentity.GetCurrent().Name;
-            var expectedKeyFile = "expectedKey.xml";
-
-            Program.Main(new[]{"create", "keys",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", expectedKeyFile,
-                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
-
-
-           Assert.Throws<InvalidOperationException>(() => Program.Main(new[]{"create", "container",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "anotherContainer",
-                $"-{WellKnownCommandArguments.IMPORT_KEY}", expectedKeyFile}));
-        }
-
-
-        public JObject DecryptFile(string containerName)
-        {
-                JsonConfigurationFileEncrypter encrypter = new JsonConfigurationFileEncrypter(new HybridEncryption(new RSAEncryption(containerName), new AESEncryption()), new RNGCryptoRandomBytesGenerator());
-
-                return encrypter.Decrypt(JObject.Parse(File.ReadAllText("appsettings.encrypted.json")));
-        }
-
-        private static RSACryptoServiceProvider LoadContainer(string containerName)
-        {
-            CspParameters cspParams = new CspParameters
-            {
-                KeyContainerName = containerName,
-                KeyNumber = (int) KeyNumber.Exchange,
-                Flags = CspProviderFlags.UseMachineKeyStore | CspProviderFlags.NoPrompt,
-            };
-
-            RSACryptoServiceProvider provider = new RSACryptoServiceProvider(cspParams);
-            return provider;
-        }
-
-        [Test]
-        public void GivenCreateKeysCommand_WithInvalidArguments_WhenCreatingKeys_ThenIgnoresAdditionalArguments()
-        {
-            var currentUser = WindowsIdentity.GetCurrent().Name;
-
-            Program.Main(new[]{"create", "keys",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{currentUser}",
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", "key.xml",
-                $"-{WellKnownCommandArguments.JSON_CONFIGURATION_PATH}", "appsettings.json",
-                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "anyContainerName"});
-
-            FileAssert.DoesNotExist("appsettings.encrypted.json");
         }
 
         [TearDown]
