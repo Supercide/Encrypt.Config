@@ -79,9 +79,9 @@ namespace Encrypt.Config.Encryption.Asymmetric {
 
     public class EncryptionKey
     {
-        private const int SESSION_KEY_INDEX = 0;
-        private const int IV_INDEX = 8;
-        private const int HMAC_INDEX = 16;
+        private const int SESSION_KEY_INDEX = 12;
+        private const int IV_INDEX = 16;
+        private const int HMAC_INDEX = 20;
 
         public byte[] SessionKey { get; }
         public byte[] IV { get; }
@@ -127,9 +127,6 @@ namespace Encrypt.Config.Encryption.Asymmetric {
         private byte[] GetBytes(int value)
         {
             var bytes = BitConverter.GetBytes(value);
-
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(bytes);
 
             return bytes;
         }

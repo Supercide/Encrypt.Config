@@ -32,7 +32,7 @@ namespace Encrypt.Config.Encryption.RSA {
 
         private static CspParameters CreateCspParamerters(string containerName)
         {
-            CspParameters cspParams = new CspParameters(1)
+            CspParameters cspParams = new CspParameters
             {
                 KeyContainerName = containerName,
                 KeyNumber = (int) KeyNumber.Exchange,
@@ -71,6 +71,21 @@ namespace Encrypt.Config.Encryption.RSA {
             };
 
             rsaProvider.FromXmlString(key);
+
+            return rsaProvider;
+        }
+
+        public static RSACryptoServiceProvider CreateFromContainer(string containerName)
+        {
+            CspParameters cspParams = new CspParameters
+            {
+                 KeyContainerName = containerName
+            };
+
+            RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(cspParams)
+            {
+                PersistKeyInCsp = false
+            };
 
             return rsaProvider;
         }

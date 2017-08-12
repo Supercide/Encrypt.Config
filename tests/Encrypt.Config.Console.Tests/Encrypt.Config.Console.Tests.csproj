@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GivenApplication_WhenCreatingKeySets.cs" />
+    <Compile Include="GivenApplication_WhenEncryptingFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RSAWrapperTests.cs" />
   </ItemGroup>

@@ -69,6 +69,13 @@ namespace Encrypt.Config.Encryption.RSA {
 
         public byte[] DecryptData(byte[] data)
         {
+            if(_username == null)
+            {
+                using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromContainer(_containerName))
+                {
+                    return rsaCryptoServiceProvider.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+                }
+            }
             using(RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.Create(_containerName, _username))
             {
                 return rsaCryptoServiceProvider.Decrypt(data, RSAEncryptionPadding.Pkcs1);
