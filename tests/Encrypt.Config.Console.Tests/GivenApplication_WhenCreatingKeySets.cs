@@ -64,16 +64,6 @@ namespace Encrypt.Config.Console.Tests
             {
                 File.Delete("publicKey.xml");
             }
-
-            var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
-                                 .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()));
-
-            var newFiles = files.Except(_files);
-
-            foreach (var newFile in newFiles)
-            {
-                File.Delete(newFile);
-            }
         }
     }
 }

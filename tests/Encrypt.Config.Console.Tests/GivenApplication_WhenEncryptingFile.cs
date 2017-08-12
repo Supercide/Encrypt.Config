@@ -12,17 +12,10 @@ namespace Encrypt.Config.Console.Tests {
     public class GivenApplication_WhenEncryptingFile
     {
         private readonly string _currentUser;
-        private readonly string[] _files;
 
         public GivenApplication_WhenEncryptingFile()
         {
-            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
-
-            _files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
-                              .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()))
-                              .ToArray();
-
-            _currentUser = WindowsIdentity.GetCurrent().Name;
+           _currentUser = WindowsIdentity.GetCurrent().Name;
 
             Program.Main(new[]{"create", "keys",
                 $"-{WellKnownCommandArguments.USERNAME}", $"{_currentUser}",
@@ -68,16 +61,6 @@ namespace Encrypt.Config.Console.Tests {
             if (File.Exists("publicKey.xml"))
             {
                 File.Delete("publicKey.xml");
-            }
-
-            var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
-                                 .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()));
-
-            var newFiles = files.Except(_files);
-
-            foreach (var newFile in newFiles)
-            {
-                File.Delete(newFile);
             }
         }
     }
