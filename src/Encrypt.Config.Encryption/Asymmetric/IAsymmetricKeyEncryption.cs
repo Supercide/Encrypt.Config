@@ -8,16 +8,16 @@ namespace Encrypt.Config.Encryption.Asymmetric {
     {
         string ExportKey(bool includePrivate);
 
-        byte[] EncryptData(byte[] data, string publicKey);
+        byte[] EncryptData(byte[] data);
 
         byte[] DecryptData(byte[] data);
     }
 
     public interface IHybridEncryption
     {
-        EncryptedData EncryptData(byte[] sessionKey, byte[] data, byte[] Iv, string publicKey);
+        (EncryptionKey key, byte[] encryptedData) EncryptData(byte[] sessionKey, byte[] data, byte[] Iv);
 
-        byte[] DecryptData(EncryptedData encryptedData);
+        byte[] DecryptData(EncryptionKey encryptionKey, byte[] data);
     }
 
     public class HybridEncryption : IHybridEncryption
@@ -31,35 +31,35 @@ namespace Encrypt.Config.Encryption.Asymmetric {
             _symmetricKeyEncryption = symmetricKeyEncryption;
         }
 
-        public EncryptedData EncryptData(byte[] sessionKey, byte[] data, byte[] Iv, string publicKey)
+        public (EncryptionKey key, byte[] encryptedData) EncryptData(byte[] sessionKey, byte[] data, byte[] Iv)
         {
             var encryptedData = _symmetricKeyEncryption.Encrypt(data, sessionKey, Iv);
 
-            var encryptedSessionKey = _asymmetricKeyEncryption.EncryptData(sessionKey, publicKey);
+            var encryptedSessionKey = _asymmetricKeyEncryption.EncryptData(sessionKey);
             byte[] hmacHash;
             using (var hmac = new HMACSHA256(sessionKey))
             {
                 hmacHash = hmac.ComputeHash(encryptedData);
             }
 
-            return new EncryptedData(encryptedSessionKey, encryptedData, Iv, hmacHash);
+            return (new EncryptionKey(encryptedSessionKey, Iv, hmacHash), encryptedData);
         }
 
-        public byte[] DecryptData(EncryptedData encryptedData)
+        public byte[] DecryptData(EncryptionKey encryptionKey, byte[] data)
         {
-            var decryptedSessionKey = _asymmetricKeyEncryption.DecryptData(encryptedData.SessionKey);
+            var decryptedSessionKey = _asymmetricKeyEncryption.DecryptData(encryptionKey.SessionKey);
 
             using (var hmac = new HMACSHA256(decryptedSessionKey))
             {
-                var hmacToCheck = hmac.ComputeHash(encryptedData.Data);
+                var hmacToCheck = hmac.ComputeHash(data);
 
-                if (!Compare(encryptedData.HMACHash, hmacToCheck))
+                if (!Compare(encryptionKey.HMACHash, hmacToCheck))
                 {
                     throw new CryptographicException("HMAC signatures do not match");
                 }
             }
 
-            var decryptedData = _symmetricKeyEncryption.Decrypt(encryptedData.Data, decryptedSessionKey, encryptedData.IV);
+            var decryptedData = _symmetricKeyEncryption.Decrypt(data, decryptedSessionKey, encryptionKey.IV);
 
             return decryptedData;
         }
@@ -77,42 +77,36 @@ namespace Encrypt.Config.Encryption.Asymmetric {
         }
     }
 
-    public class EncryptedData
+    public class EncryptionKey
     {
         private const int SESSION_KEY_INDEX = 0;
-        private const int DATA_INDEX = 4;
         private const int IV_INDEX = 8;
         private const int HMAC_INDEX = 16;
 
         public byte[] SessionKey { get; }
-        public byte[] Data { get; }
         public byte[] IV { get; }
         public byte[] HMACHash { get; }
 
-        public EncryptedData(byte[] sessionKey, byte[] encryptedData, byte[] iv, byte[] hmacHash)
+        public EncryptionKey(byte[] sessionKey, byte[] iv, byte[] hmacHash)
         {
             SessionKey = sessionKey;
-            Data = encryptedData;
             IV = iv;
             HMACHash = hmacHash;
         }
 
-        public static EncryptedData FromBlob(byte[] blob)
+        public static EncryptionKey FromBlob(byte[] blob)
         {
             var sessionKeyLength = ExtractHeader(SESSION_KEY_INDEX, blob);
-
-            var dataLength = ExtractHeader(DATA_INDEX, blob);
 
             var iVLength = ExtractHeader(IV_INDEX, blob);
 
             var hmacLength = ExtractHeader(HMAC_INDEX, blob);
 
             var sessionKey = ExtractData(0, sessionKeyLength, blob);
-            var data = ExtractData(sessionKeyLength, dataLength, blob);
-            var iv = ExtractData(sessionKeyLength + dataLength, iVLength, blob);
-            var hmac = ExtractData(sessionKeyLength + dataLength + iVLength, hmacLength, blob);
+            var iv = ExtractData(sessionKeyLength, iVLength, blob);
+            var hmac = ExtractData(sessionKeyLength + iVLength, hmacLength, blob);
 
-            return new EncryptedData(sessionKey, data, iv, hmac);
+            return new EncryptionKey(sessionKey, iv, hmac);
         }
 
         private static byte[] ExtractData(int index, int length, byte[] blob)
@@ -143,7 +137,6 @@ namespace Encrypt.Config.Encryption.Asymmetric {
         public byte[] ExportToBlob()
         {
             var header = GetBytes(SessionKey.Length)
-                            .Concat(GetBytes(Data.Length))
                             .Concat(GetBytes(IV.Length))
                             .Concat(GetBytes(HMACHash.Length));
 
@@ -151,7 +144,6 @@ namespace Encrypt.Config.Encryption.Asymmetric {
 
             blob.AddRange(header);
             blob.AddRange(SessionKey);
-            blob.AddRange(Data);
             blob.AddRange(IV);
             blob.AddRange(HMACHash);
 

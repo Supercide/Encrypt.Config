@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JsonConfigurationFileEncrypter.cs" />
+    <Compile Include="FileEncrypter.cs" />
     <Compile Include="JsonConfigurationFileParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

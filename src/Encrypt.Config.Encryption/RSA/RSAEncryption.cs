@@ -6,6 +6,8 @@ namespace Encrypt.Config.Encryption.RSA {
     {
         private readonly string _containerName;
         private readonly string _username;
+        private string _publicKey;
+        
 
         public RSAEncryption()
         {
@@ -23,6 +25,24 @@ namespace Encrypt.Config.Encryption.RSA {
             _username = username;
         }
 
+        public static RSAEncryption FromNewContainer(string containerName, string username)
+        {
+            return new RSAEncryption(containerName, username);
+        }
+
+        public static RSAEncryption FromExistingContainer(string containerName)
+        {
+            return new RSAEncryption(containerName);
+        }
+
+        public static RSAEncryption FromPublicKey(string publicKey)
+        {
+            return new RSAEncryption
+            {
+                _publicKey = publicKey
+            };
+        }
+
         public string ExportKey(bool includePrivate)
         {
             using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.Create(_containerName, _username))
@@ -31,12 +51,18 @@ namespace Encrypt.Config.Encryption.RSA {
             }
         }
 
-        public byte[] EncryptData(byte[] data, string publicKey)
+        public byte[] EncryptData(byte[] data)
         {
-            using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromPublicKey(publicKey))
+            if(_publicKey == null)
             {
-                rsaCryptoServiceProvider.FromXmlString(publicKey);
+                using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.Create(_containerName, _username))
+                {
+                    return rsaCryptoServiceProvider.Encrypt(data, RSAEncryptionPadding.Pkcs1);
+                }
+            }
 
+            using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromPublicKey(_publicKey))
+            {
                 return rsaCryptoServiceProvider.Encrypt(data, RSAEncryptionPadding.Pkcs1);
             }
         }
