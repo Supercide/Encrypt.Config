@@ -36,7 +36,7 @@ namespace Encrypt.Config.Json
                 var encryptedValue = _hybridEncryption.EncryptData(sessionKey, data, iv, publicKey);
 
                 string base64Data = Convert.ToBase64String(encryptedValue.Data);
-                string base64Hash = Convert.ToBase64String(encryptedValue.HmacHash);
+                string base64Hash = Convert.ToBase64String(encryptedValue.HMACHash);
                 string base64Key = Convert.ToBase64String(encryptedValue.SessionKey);
                 string base64IV = Convert.ToBase64String(encryptedValue.IV);
 

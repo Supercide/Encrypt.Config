@@ -1,6 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
-using Encrypt.Config.Encryption.RSA;
-using Encrypt.Config.Encryption.Symmetric;
 
 namespace Encrypt.Config.Encryption.Asymmetric {
     public interface IAsymmetricKeyEncryption
@@ -52,7 +53,7 @@ namespace Encrypt.Config.Encryption.Asymmetric {
             {
                 var hmacToCheck = hmac.ComputeHash(encryptedData.Data);
 
-                if (!Compare(encryptedData.HmacHash, hmacToCheck))
+                if (!Compare(encryptedData.HMACHash, hmacToCheck))
                 {
                     throw new CryptographicException("HMAC signatures do not match");
                 }
@@ -78,19 +79,83 @@ namespace Encrypt.Config.Encryption.Asymmetric {
 
     public class EncryptedData
     {
+        private const int SESSION_KEY_INDEX = 0;
+        private const int DATA_INDEX = 4;
+        private const int IV_INDEX = 8;
+        private const int HMAC_INDEX = 16;
+
         public byte[] SessionKey { get; }
         public byte[] Data { get; }
         public byte[] IV { get; }
-        public byte[] HmacHash { get; }
-
-        public byte[] HMAC { get; }
+        public byte[] HMACHash { get; }
 
         public EncryptedData(byte[] sessionKey, byte[] encryptedData, byte[] iv, byte[] hmacHash)
         {
             SessionKey = sessionKey;
             Data = encryptedData;
             IV = iv;
-            HmacHash = hmacHash;
+            HMACHash = hmacHash;
+        }
+
+        public static EncryptedData FromBlob(byte[] blob)
+        {
+            var sessionKeyLength = ExtractHeader(SESSION_KEY_INDEX, blob);
+
+            var dataLength = ExtractHeader(DATA_INDEX, blob);
+
+            var iVLength = ExtractHeader(IV_INDEX, blob);
+
+            var hmacLength = ExtractHeader(HMAC_INDEX, blob);
+
+            var sessionKey = ExtractData(0, sessionKeyLength, blob);
+            var data = ExtractData(sessionKeyLength, dataLength, blob);
+            var iv = ExtractData(sessionKeyLength + dataLength, iVLength, blob);
+            var hmac = ExtractData(sessionKeyLength + dataLength + iVLength, hmacLength, blob);
+
+            return new EncryptedData(sessionKey, data, iv, hmac);
+        }
+
+        private static byte[] ExtractData(int index, int length, byte[] blob)
+        {
+            return blob.Skip(index)
+                       .Take(length)
+                       .ToArray();
+        }
+        private static int ExtractHeader(int index, byte[] blob)
+        {
+            var headerBlob = blob.Skip(index)
+                             .Take(4)
+                             .ToArray();
+
+            return BitConverter.ToInt32(headerBlob, 0);
+        }
+
+        private byte[] GetBytes(int value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+
+            return bytes;
+        }
+
+        public byte[] ExportToBlob()
+        {
+            var header = GetBytes(SessionKey.Length)
+                            .Concat(GetBytes(Data.Length))
+                            .Concat(GetBytes(IV.Length))
+                            .Concat(GetBytes(HMACHash.Length));
+
+            List<byte> blob = new List<byte>();
+
+            blob.AddRange(header);
+            blob.AddRange(SessionKey);
+            blob.AddRange(Data);
+            blob.AddRange(IV);
+            blob.AddRange(HMACHash);
+
+            return blob.ToArray();
         }
     }
 }
