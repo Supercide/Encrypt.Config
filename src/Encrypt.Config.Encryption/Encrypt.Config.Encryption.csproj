@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Asymmetric\EncryptionKey.cs" />
+    <Compile Include="Asymmetric\HybridEncryption.cs" />
+    <Compile Include="Asymmetric\IHybridEncryption.cs" />
     <Compile Include="RSA\RSAEncryption.cs" />
     <Compile Include="Symmetric\AESEncryption.cs" />
     <Compile Include="Random\RNGCryptoRandomBytesGenerator.cs" />
