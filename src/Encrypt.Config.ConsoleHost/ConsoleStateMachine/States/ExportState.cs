@@ -17,18 +17,12 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
         {
             try
             {
-                string filePath;
-                if (!context.Arguments.TryGetValue(WellKnownCommandArguments.EXPORT_KEY, out filePath))
+                if (!context.Arguments.TryGetValue(WellKnownCommandArguments.EXPORT_KEY, out var filePath))
                 {
                     throw new InvalidOperationException();
                 }
 
                 var exportPrivateKey = context.Arguments.ContainsKey(WellKnownCommandArguments.KEY_TYPE_PRIVATE);
-
-                if (!exportPrivateKey && !context.Arguments.ContainsKey(WellKnownCommandArguments.KEY_TYPE_PUBLIC))
-                {
-                    throw new InvalidOperationException();
-                }
 
                 var keyData = _rsaEncryption.ExportKey(exportPrivateKey);
 

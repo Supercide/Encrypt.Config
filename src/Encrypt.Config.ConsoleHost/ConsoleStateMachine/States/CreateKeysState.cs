@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Encrypt.Config.ConsoleHost.Constants;
+using Encrypt.Config.ConsoleHost.Exceptions;
 using Encrypt.Config.Encryption.Asymmetric;
 
 namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
@@ -8,16 +9,14 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
 
         public override void Handle(Context context)
         {
-            string containerName;
-            if(!context.Arguments.TryGetValue(WellKnownCommandArguments.CONTAINER_NAME, out containerName))
+            if(!context.Arguments.TryGetValue(WellKnownCommandArguments.CONTAINER_NAME, out var containerName))
             {
-                throw new InvalidOperationException();
+                throw new ContainerNameMissingException("Missing container name argument when creating key. try create --help for more information");
             }
 
-            string username;
-            if(!context.Arguments.TryGetValue(WellKnownCommandArguments.USERNAME, out username))
+            if(!context.Arguments.TryGetValue(WellKnownCommandArguments.USERNAME, out var username))
             {
-                throw new InvalidOperationException();
+                throw new UsernameMissingException("Missing username argument when creating key. try create --help for more information");
             }
 
             var rsaEncryption = new RSAEncryption(containerName, username);

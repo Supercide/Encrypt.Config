@@ -57,6 +57,8 @@
     <Compile Include="ConsoleStateMachine\States\EndState.cs" />
     <Compile Include="ConsoleStateMachine\States\ExportState.cs" />
     <Compile Include="ConsoleStateMachine\States\EncryptionState.cs" />
+    <Compile Include="Exceptions\ContainerNameMissingException.cs" />
+    <Compile Include="Exceptions\UsernameMissingException.cs" />
     <Compile Include="FileEncrypter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
