@@ -15,7 +15,7 @@ JSON Configuration encryption tool
 In production environments, configuration files will more than likely contain sensitive information. Encrypt.Config is a tool designed to help protect configuration files by encrypting them. When used in combination with [Decrypt.Config](https://github.com/Supercide/Decrypt.Config) an ASP Core application will be able to use any encrypted files produced by this tool. 
 
 ## Getting Started 
-Encryption comes with its own set of unique challenges. Encrypt.Config Aims to make life a little easier by simplyfiy the process of Key management, Key distrubution and Trust. Read more below on how it does this or dive right in to the code by checking out the docs [Show me the code!!!](/docs).
+Encryption comes with its own set of unique challenges. Encrypt.Config Aims to make life a little easier by simplyfiy the process of Key management, Key distrubution and Trust. Read more below on how it does this or dive right into the code by checking out the docs [Show me the code!!!](/docs).
 
 ## Key distribution 
 #### how do we convey keys to those who need them to establish secure communication? 
