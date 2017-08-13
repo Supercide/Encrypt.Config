@@ -17,7 +17,7 @@ In production environments, configuration files will more than likely contain se
 # Getting Started 
 Check out the [Docs](/docs) folder for instructions on how to use the application 
 
-# Current day issues
+# What does it solve?
 Encryption comes with its own set of unique challenges. Encrypt config Aims to combat the following issues
 
 ## Key distribution 
@@ -51,7 +51,17 @@ When Bob recieves the message he will:
 3. Verify the signature
     - Using Alices public signing key Bob will verify the signature of the HMAC. This ensures that the message did indeed come from Alice
 4. Decrypt the Message
-    - using the session key with the IV Bob and proceed to decrypt the message 
+    - using the session key with the IV Bob and proceed to decrypt the message
+
+# What doesn't it solve?
+For now Encypt.Config does not manage storing of the public keys securly, normally this wouldn't be an issue but if a attacker was able comprimise both sets of public keys (public signing key and public encryption key) theoretically they would be able to forge messages between systems. eg
+
+1. Attacker replaces Bob's copy of Alice's public signing key with there own
+2. Attacker uses Bob's public encryption key and Alice's replaced signing key to create HMAC, IV, Signature and encrypted data
+3. Attacker sends these to Bob. Bob accepts and thinks these have come from alice
+4. World burns!
+
+You may be able to prevent this from happening through the use of DPAPI, NTFS ACL's or EFS
 
 # License
 
