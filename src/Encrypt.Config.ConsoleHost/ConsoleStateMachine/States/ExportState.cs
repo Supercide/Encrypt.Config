@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Encrypt.Config.ConsoleHost.Constants;
 using Encrypt.Config.Encryption.Asymmetric;
 
 namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {

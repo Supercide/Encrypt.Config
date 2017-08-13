@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Encrypt.Config.ConsoleHost;
+using Encrypt.Config.ConsoleHost.Constants;
 using Encrypt.Config.Encryption.Constants;
 using NUnit.Framework;
 

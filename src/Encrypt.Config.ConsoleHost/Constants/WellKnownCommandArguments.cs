@@ -1,4 +1,4 @@
-namespace Encrypt.Config.ConsoleHost {
+namespace Encrypt.Config.ConsoleHost.Constants {
     public class WellKnownCommandArguments
     {
         public const string IMPORT_KEY = "imp";

@@ -1,4 +1,4 @@
-namespace Encrypt.Config.ConsoleHost {
+namespace Encrypt.Config.ConsoleHost.Constants {
     public class WellKnownCommands
     {
         public const string CREATE_KEYS = "create";
