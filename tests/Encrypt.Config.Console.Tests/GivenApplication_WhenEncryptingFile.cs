@@ -28,7 +28,7 @@ namespace Encrypt.Config.Console.Tests {
             Program.Main(new[]{"create", "keys",
                 $"-{WellKnownCommandArguments.USERNAME}", $"{_currentUser}",
                 $"-{WellKnownCommandArguments.EXPORT_KEY}", _keyFile,
-                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
+                $"-{WellKnownCommandArguments.KEY_TYPE_PUBLIC}",
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", _containerName});
 
             Program.Main(new[]{"encrypt",

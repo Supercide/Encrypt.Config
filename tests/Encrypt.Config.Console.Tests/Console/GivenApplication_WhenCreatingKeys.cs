@@ -21,7 +21,6 @@ namespace Encrypt.Config.Console.Tests.Console
 
         readonly string containerName = $"{Guid.NewGuid()}";
 
-
         public GivenApplication_WhenCreatingKeys()
         {
             _currentUser = WindowsIdentity.GetCurrent().Name;
@@ -30,7 +29,7 @@ namespace Encrypt.Config.Console.Tests.Console
                 WellKnownCommands.CREATE_KEYS,
                 $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
                 $"-{WellKnownCommandArguments.EXPORT_KEY}", ExpectedKeyFile,
-                $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
+                $"-{WellKnownCommandArguments.KEY_TYPE_PUBLIC}",
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName});
         }
 
