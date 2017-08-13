@@ -15,26 +15,18 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
 
         public override void Handle(Context context)
         {
-            try
+            if(!context.Arguments.TryGetValue(WellKnownCommandArguments.EXPORT_KEY, out var filePath))
             {
-                if (!context.Arguments.TryGetValue(WellKnownCommandArguments.EXPORT_KEY, out var filePath))
-                {
-                    throw new InvalidOperationException();
-                }
-
-                var exportPrivateKey = context.Arguments.ContainsKey(WellKnownCommandArguments.KEY_TYPE_PRIVATE);
-
-                var keyData = _rsaEncryption.ExportKey(exportPrivateKey);
-
-                File.WriteAllText(filePath, keyData);
-
-                SetEndState(context);
-
-            } catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
+                throw new InvalidOperationException();
             }
+
+            var exportPrivateKey = context.Arguments.ContainsKey(WellKnownCommandArguments.KEY_TYPE_PRIVATE);
+
+            var keyData = _rsaEncryption.ExportKey(exportPrivateKey);
+
+            File.WriteAllText(filePath, keyData);
+
+            SetEndState(context);
         }
 
         public static ExportState CreateWithContainer(RSAEncryption rsaEncryption)
