@@ -5,9 +5,10 @@ using System.Linq;
 namespace Encrypt.Config.Encryption.Asymmetric {
     public class EncryptionKey
     {
-        private const int SESSION_KEY_INDEX = 12;
-        private const int IV_INDEX = 16;
-        private const int HMAC_INDEX = 20;
+        private const int SESSION_KEY_INDEX = 0;
+        private const int IV_INDEX = 4;
+        private const int HMAC_INDEX = 8;
+        private const int HEADER_OFFSET = 12;
 
         public byte[] SessionKey { get; }
         public byte[] IV { get; }
@@ -28,9 +29,9 @@ namespace Encrypt.Config.Encryption.Asymmetric {
 
             var hmacLength = ExtractHeader(HMAC_INDEX, blob);
 
-            var sessionKey = ExtractData(0, sessionKeyLength, blob);
-            var iv = ExtractData(sessionKeyLength, iVLength, blob);
-            var hmac = ExtractData(sessionKeyLength + iVLength, hmacLength, blob);
+            var sessionKey = ExtractData(HEADER_OFFSET + 0, sessionKeyLength, blob);
+            var iv = ExtractData(HEADER_OFFSET + sessionKeyLength, iVLength, blob);
+            var hmac = ExtractData(HEADER_OFFSET + sessionKeyLength + iVLength, hmacLength, blob);
 
             return new EncryptionKey(sessionKey, iv, hmac);
         }
@@ -59,13 +60,17 @@ namespace Encrypt.Config.Encryption.Asymmetric {
 
         public byte[] ExportToBlob()
         {
-            var header = GetBytes(SessionKey.Length)
-                .Concat(GetBytes(IV.Length))
-                .Concat(GetBytes(HMACHash.Length));
+            // 12 bytes for the header
+            var sessionKeyHeader = GetBytes(SessionKey.Length);
+            var ivHeader = GetBytes(IV.Length);
+            var hmacHashKeyHeader = GetBytes(HMACHash.Length);
 
             List<byte> blob = new List<byte>();
 
-            blob.AddRange(header);
+            blob.AddRange(sessionKeyHeader);
+            blob.AddRange(ivHeader);
+            blob.AddRange(hmacHashKeyHeader);
+
             blob.AddRange(SessionKey);
             blob.AddRange(IV);
             blob.AddRange(HMACHash);
