@@ -11,12 +11,14 @@ namespace Encrypt.Config.Console.Tests
     [SetUpFixture]
     class GlobalSetup
     {
-        private string[] _files;
+        public static IEnumerable<string> TrackingFiles { get; private set; }
 
         [OneTimeSetUp]
         public void SetUp()
         {
-            _files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
+            TrackingFiles = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
                               .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()))
                               .ToArray();
         }
@@ -27,7 +29,7 @@ namespace Encrypt.Config.Console.Tests
             var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
                                  .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()));
 
-            var newFiles = files.Except(_files);
+            var newFiles = files.Except(TrackingFiles);
 
             foreach (var newFile in newFiles)
             {

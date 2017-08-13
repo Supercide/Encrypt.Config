@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using Encrypt.Config.ConsoleHost;
 using Encrypt.Config.Encryption.Random;
 using Encrypt.Config.Json;
@@ -15,24 +16,20 @@ namespace Encrypt.Config.Console.Tests
     [TestFixture]
     public class GivenApplication_WhenCreatingKeySets
     {
-        private readonly string[] _files;
         private readonly string _currentUser;
+
+        readonly string containerName = $"{Guid.NewGuid()}";
+
 
         public GivenApplication_WhenCreatingKeySets()
         {
-            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
-
-            _files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
-                              .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()))
-                              .ToArray();
-
             _currentUser = WindowsIdentity.GetCurrent().Name;
 
             Program.Main(new[]{"create", "keys",
                 $"-{WellKnownCommandArguments.USERNAME}", $"{_currentUser}",
                 $"-{WellKnownCommandArguments.EXPORT_KEY}", "key",
                 $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
-                $"-{WellKnownCommandArguments.CONTAINER_NAME}", "TestContainer"});
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName});
         }
 
         [Test]
@@ -42,13 +39,19 @@ namespace Encrypt.Config.Console.Tests
         }
 
         [Test]
-        public void ThenSetsACLOnKeyContainer()
+        public async Task ThenSetsACLOnKeyContainer()
         {
-            var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys");
+            var cspParameters = new CspParameters
+            {
+                KeyContainerName = containerName,
+                Flags = CspProviderFlags.UseMachineKeyStore
+            };
 
-            var containerFile = files.Except(_files).Single();
+            CspKeyContainerInfo info = new CspKeyContainerInfo(cspParameters);
 
-            var controlList = File.GetAccessControl(containerFile);
+            var containerPath = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", info.UniqueKeyContainerName);
+
+            var controlList = File.GetAccessControl(containerPath);
 
             var accessRule = controlList.GetAccessRules(true, true, typeof(NTAccount))
                                          .Cast<AuthorizationRule>()

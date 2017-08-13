@@ -13,13 +13,13 @@ namespace Encrypt.Config.Console.Tests
 {
 
     [TestFixture]
-    public class RSAWrapperTests
+    public class RSAEncryptionTests
     {
         private readonly IEnumerable<string> _files;
 
         readonly string User;
 
-        public RSAWrapperTests()
+        public RSAEncryptionTests()
         {
             User = WindowsIdentity.GetCurrent().Name;
 
@@ -86,9 +86,8 @@ namespace Encrypt.Config.Console.Tests
                                        .Select(x => (FileSystemRights)Enum.Parse(typeof(FileSystemRights), x, true));
 
                 Assert.NotNull(rights);
-                Assert.That(rights.Count(), Is.EqualTo(2));
-                Assert.That(rights.Any(systemRights => systemRights == FileSystemRights.Read));
-                Assert.That(rights.Any(systemRights => systemRights == FileSystemRights.Synchronize));
+                Assert.That(rights.Count(), Is.EqualTo(1));
+                Assert.That(rights.Any(systemRights => systemRights == FileSystemRights.FullControl));
             
         }
 
