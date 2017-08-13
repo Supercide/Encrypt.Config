@@ -22,12 +22,22 @@ namespace Encrypt.Config.Encryption.RSA {
 
         private static void SetFileAccessRule(string username, string uniqueKeyContainerName)
         {
-            var fs = new FileSecurity();
-            fs.SetAccessRuleProtection(false, false);
-            File.SetAccessControl(Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", uniqueKeyContainerName), fs);
+            var filePath = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", uniqueKeyContainerName);
 
-            fs.AddAccessRule(new FileSystemAccessRule(username, FileSystemRights.Read, AccessControlType.Allow));
-            File.SetAccessControl(Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", uniqueKeyContainerName), fs);
+            var fs = new FileSecurity(filePath, AccessControlSections.All);
+
+            AuthorizationRuleCollection accessRules = fs.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount));
+
+            fs.SetAccessRuleProtection(true, false); 
+
+            foreach (FileSystemAccessRule accessRule in accessRules) 
+            {
+                fs.PurgeAccessRules(accessRule.IdentityReference);  
+            }
+
+            fs.AddAccessRule(new FileSystemAccessRule(username, FileSystemRights.FullControl, AccessControlType.Allow));
+
+            File.SetAccessControl(filePath, fs);
         }
 
         private static CspParameters CreateCspParamerters(string containerName)
@@ -40,25 +50,6 @@ namespace Encrypt.Config.Encryption.RSA {
             };
 
             return cspParams;
-        }
-
-        public static RSACryptoServiceProvider CreateFromKey(string containerName, string key, string username)
-        {
-            CspParameters cspParams = CreateCspParamerters(containerName);
-
-            RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(cspParams)
-            {
-                PersistKeyInCsp = true
-            };
-
-            rsaProvider.FromXmlString(key);
-
-            if(rsaProvider.PublicOnly)
-            {
-                throw new InvalidOperationException();
-            }
-
-            return rsaProvider;
         }
 
         public static RSACryptoServiceProvider CreateFromPublicKey(string key)
@@ -77,14 +68,11 @@ namespace Encrypt.Config.Encryption.RSA {
 
         public static RSACryptoServiceProvider CreateFromContainer(string containerName)
         {
-            CspParameters cspParams = new CspParameters
-            {
-                 KeyContainerName = containerName
-            };
+            CspParameters cspParams = CreateCspParamerters(containerName);
 
             RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(cspParams)
             {
-                PersistKeyInCsp = false
+                PersistKeyInCsp = true
             };
 
             return rsaProvider;
