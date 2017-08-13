@@ -26,9 +26,15 @@ namespace Encrypt.Config.ConsoleHost.StateMachine.States {
                 throw new MissingFilePathException("Missing encrypted file path argument. try encrypt --help for more information");
             }
 
+            if (!context.Arguments.TryGetValue(WellKnownCommandArguments.SIGNATURE_CONTAINER, out var signatureContainer))
+            {
+                throw new ContainerNameMissingException("Missing name of signature container. try encrypt --help for more information");
+            }
+
             var publicKey = File.ReadAllText(publicKeyPath);
 
-            var fileEncrypter = new FileEncrypter(new HybridEncryption(RSAEncryption.FromPublicKey(publicKey), new AESEncryption()), new RNGCryptoRandomBytesGenerator());
+            var fileEncrypter = new FileEncrypter(HybridEncryption.CreateEncryption(publicKey,signatureContainer), 
+                                                  new RNGCryptoRandomBytesGenerator());
 
             var encryptionResult = fileEncrypter.Encrypt(filePath);
 

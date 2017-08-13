@@ -15,8 +15,12 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
-            
+            var target = new RSAEncryption("target", currentUser);
+            new RSAEncryption("signatureContainer", currentUser);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
+
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
             var data = new byte[512];
@@ -38,7 +42,11 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            new RSAEncryption("signatureContainer", currentUser);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
@@ -61,7 +69,11 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            new RSAEncryption("signatureContainer", currentUser);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
@@ -84,7 +96,11 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            new RSAEncryption("signatureContainer", currentUser);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 

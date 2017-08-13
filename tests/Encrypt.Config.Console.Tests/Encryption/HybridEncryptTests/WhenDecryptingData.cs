@@ -16,7 +16,13 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            var signatureContainer = new RSAEncryption("signatureContainer", currentUser);
+            var signaturePublicKey = signatureContainer.ExportKey(false);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
+            HybridDecryption hybridDecryption = HybridDecryption.CreateDecryption("target", signaturePublicKey);
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
@@ -28,9 +34,11 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests
             random.GetBytes(iv);
             random.GetBytes(data);
 
-            (EncryptionKey key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
+            (EncryptionSettings key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
 
-            var decryptedData = hybridEncryption.DecryptData(encryptedResult.key, encryptedResult.encryptedData);
+
+
+            var decryptedData = hybridDecryption.DecryptData(encryptedResult.key, encryptedResult.encryptedData);
 
             Assert.That(decryptedData, Is.EqualTo(data));
         }
@@ -41,7 +49,13 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            var signatureContainer = new RSAEncryption("signatureContainer", currentUser);
+            var signaturePublicKey = signatureContainer.ExportKey(false);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
+            HybridDecryption hybridDecryption = HybridDecryption.CreateDecryption("target", signaturePublicKey);
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
@@ -53,13 +67,13 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests
             random.GetBytes(iv);
             random.GetBytes(data);
 
-            (EncryptionKey key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
+            (EncryptionSettings key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
 
             var keyBlob = encryptedResult.key.ExportToBlob();
 
-            var keyFromBlob = EncryptionKey.FromBlob(keyBlob);
+            var keyFromBlob = EncryptionSettings.FromBlob(keyBlob);
 
-            var decryptedData = hybridEncryption.DecryptData(keyFromBlob, encryptedResult.encryptedData);
+            var decryptedData = hybridDecryption.DecryptData(keyFromBlob, encryptedResult.encryptedData);
 
             Assert.That(decryptedData, Is.EqualTo(data));
         }

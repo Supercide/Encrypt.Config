@@ -17,7 +17,7 @@ namespace Encrypt.Config.ConsoleHost
             _randomBytesGenerator = randomBytesGenerator;
         }
 
-        public (EncryptionKey key, byte[] data) Encrypt(string filePath)
+        public (EncryptionSettings key, byte[] data) Encrypt(string filePath)
         {
             var file = File.ReadAllBytes(filePath);
 
@@ -26,15 +26,6 @@ namespace Encrypt.Config.ConsoleHost
             var iv = _randomBytesGenerator.Generate(16);
 
             return _hybridEncryption.EncryptData(sessionKey, file, iv);
-        }
-
-        public byte[] Decrypt(string keyPath, byte[] encryptedData)
-        {
-            var keyBlob = File.ReadAllBytes(keyPath);
-
-            var encryptionKey = EncryptionKey.FromBlob(keyBlob);
-
-            return _hybridEncryption.DecryptData(encryptionKey, encryptedData);
         }
     }
 }

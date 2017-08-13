@@ -1,7 +1,14 @@
 using System.Security.Cryptography;
 
 namespace Encrypt.Config.Encryption.Asymmetric {
-    public class RSAEncryption : IAsymmetricKeyEncryption
+    public interface IDigitalSignature
+    {
+        byte[] SignData(byte[] data);
+
+        bool VerifyData(byte[] data, byte[] signature);
+    }
+
+    public class RSAEncryption : IAsymmetricKeyEncryption, IDigitalSignature
     {
         private readonly string _containerName;
         private readonly string _username;
@@ -74,6 +81,22 @@ namespace Encrypt.Config.Encryption.Asymmetric {
             using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromContainer(_containerName))
             {
                 return rsaCryptoServiceProvider.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+            }
+        }
+
+        public byte[] SignData(byte[] data)
+        {
+            using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromContainer(_containerName))
+            {
+                return rsaCryptoServiceProvider.SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            }
+        }
+
+        public bool VerifyData(byte[] data, byte[] signature)
+        {
+            using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromPublicKey(_publicKey))
+            {
+                return rsaCryptoServiceProvider.VerifyData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
             }
         }
     }

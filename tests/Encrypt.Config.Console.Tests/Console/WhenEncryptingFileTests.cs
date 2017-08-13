@@ -15,7 +15,9 @@ namespace Encrypt.Config.Console.Tests.Console {
     {
         private readonly string _currentUser = WindowsIdentity.GetCurrent().Name;
         private readonly string _keyFile = $"{Guid.NewGuid()}";
+        private readonly string _signaturekeyFile = $"{Guid.NewGuid()}";
         private readonly string _containerName = $"{Guid.NewGuid()}";
+        private readonly string _signatureContainerName = $"{Guid.NewGuid()}";
 
         public WhenEncryptingFileTests()
         {
@@ -24,6 +26,12 @@ namespace Encrypt.Config.Console.Tests.Console {
                 $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", _keyFile,
                 $"-{WellKnownCommandArguments.KEY_TYPE_PUBLIC}",
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", _containerName});
+
+            Program.Main(new[]{"create",
+                $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
+                $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", _signaturekeyFile,
+                $"-{WellKnownCommandArguments.KEY_TYPE_PUBLIC}",
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", _signatureContainerName});
         }
 
         [Test]
@@ -34,6 +42,7 @@ namespace Encrypt.Config.Console.Tests.Console {
             Program.Main(new[]{"encrypt",
                 $"-{WellKnownCommandArguments.IMPORT_KEY}", _keyFile,
                 $"-{WellKnownCommandArguments.FILE_PATH}", "appsettings.json",
+                $"-{WellKnownCommandArguments.SIGNATURE_CONTAINER}", _signatureContainerName,
                 $"-{WellKnownCommandArguments.ENCRYPTED_FILE_OUT}", encryptedFile});
 
             FileAssert.Exists(encryptedFile);
@@ -85,6 +94,7 @@ namespace Encrypt.Config.Console.Tests.Console {
             Program.Main(new[]{"encrypt",
                 $"-{WellKnownCommandArguments.IMPORT_KEY}", _keyFile,
                 $"-{WellKnownCommandArguments.FILE_PATH}", "appsettings.json",
+                $"-{WellKnownCommandArguments.SIGNATURE_CONTAINER}", _signatureContainerName,
                 $"-{WellKnownCommandArguments.ENCRYPTED_FILE_OUT}", encryptedFile});
 
             Assert.That(File.ReadAllBytes("appsettings.json"), Is.Not.EqualTo(File.ReadAllBytes(encryptedFile)));
@@ -97,18 +107,19 @@ namespace Encrypt.Config.Console.Tests.Console {
 
             Program.Main(new[]{"encrypt",
                 $"-{WellKnownCommandArguments.IMPORT_KEY}", _keyFile,
+                $"-{WellKnownCommandArguments.SIGNATURE_CONTAINER}", _signatureContainerName,
                 $"-{WellKnownCommandArguments.FILE_PATH}", "appsettings.json",
                 $"-{WellKnownCommandArguments.ENCRYPTED_FILE_OUT}", encryptedFile});
 
             var expectedFile = File.ReadAllBytes("appsettings.json");
 
-            var encryptedKey = EncryptionKey.FromBlob(File.ReadAllBytes("decryptionkey"));
+            var encryptedKey = EncryptionSettings.FromBlob(File.ReadAllBytes("decryptionkey"));
 
             var encryptedData = File.ReadAllBytes(encryptedFile);
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption(_containerName), new AESEncryption());
+            IHybridDecryption hybridDecryption = HybridDecryption.CreateDecryption(_containerName, File.ReadAllText(_signaturekeyFile));
 
-            var decryptedFile = hybridEncryption.DecryptData(encryptedKey, encryptedData);
+            var decryptedFile = hybridDecryption.DecryptData(encryptedKey, encryptedData);
             
             Assert.That(expectedFile, Is.EqualTo(decryptedFile));
         }

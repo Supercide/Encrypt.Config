@@ -16,7 +16,11 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests {
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            new RSAEncryption("signatureContainer", currentUser);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
@@ -27,13 +31,13 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests {
             random.GetBytes(sessionKey);
             random.GetBytes(iv);
 
-            (EncryptionKey key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
+            (EncryptionSettings key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
 
             var key = encryptedResult.key;
 
             var keyBlob = key.ExportToBlob();
 
-            var keyFromBlob = EncryptionKey.FromBlob(keyBlob);
+            var keyFromBlob = EncryptionSettings.FromBlob(keyBlob);
 
             Assert.That(keyFromBlob.IV, Is.EqualTo(key.IV));
         }
@@ -44,7 +48,11 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests {
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            new RSAEncryption("signatureContainer", currentUser);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
@@ -55,13 +63,13 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests {
             random.GetBytes(sessionKey);
             random.GetBytes(iv);
 
-            (EncryptionKey key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
+            (EncryptionSettings key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
 
             var key = encryptedResult.key;
 
             var keyBlob = key.ExportToBlob();
 
-            var keyFromBlob = EncryptionKey.FromBlob(keyBlob);
+            var keyFromBlob = EncryptionSettings.FromBlob(keyBlob);
 
             Assert.That(keyFromBlob.HMACHash, Is.EqualTo(key.HMACHash));
         }
@@ -72,7 +80,11 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests {
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            HybridEncryption hybridEncryption = new HybridEncryption(new RSAEncryption("somecontainer", currentUser), new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            new RSAEncryption("signatureContainer", currentUser);
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
@@ -83,13 +95,13 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests {
             random.GetBytes(sessionKey);
             random.GetBytes(iv);
 
-            (EncryptionKey key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
+            (EncryptionSettings key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
 
             var key = encryptedResult.key;
 
             var keyBlob = key.ExportToBlob();
 
-            var keyFromBlob = EncryptionKey.FromBlob(keyBlob);
+            var keyFromBlob = EncryptionSettings.FromBlob(keyBlob);
 
             Assert.That(keyFromBlob.SessionKey, Is.EqualTo(key.SessionKey));
         }
@@ -100,8 +112,12 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests {
             var currentUser = WindowsIdentity.GetCurrent()
                                              .Name;
 
-            var asymmetricKeyEncryption = new RSAEncryption("somecontainer", currentUser);
-            HybridEncryption hybridEncryption = new HybridEncryption(asymmetricKeyEncryption, new AESEncryption());
+            var target = new RSAEncryption("target", currentUser);
+            new RSAEncryption("signatureContainer", currentUser);
+
+            var targetPublicKey = target.ExportKey(false);
+
+            HybridEncryption hybridEncryption = HybridEncryption.CreateEncryption(targetPublicKey, "signatureContainer");
 
             RandomNumberGenerator random = new RNGCryptoServiceProvider();
 
@@ -112,14 +128,14 @@ namespace Encrypt.Config.Console.Tests.Encryption.HybridEncryptTests {
             random.GetBytes(sessionKey);
             random.GetBytes(iv);
 
-            (EncryptionKey key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
+            (EncryptionSettings key, byte[] encryptedData) encryptedResult = hybridEncryption.EncryptData(sessionKey, data, iv);
 
             var key = encryptedResult.key;
 
             var keyBlob = key.ExportToBlob();
 
-            var keyFromBlob = EncryptionKey.FromBlob(keyBlob);
-            var rsaEcryption = RSAEncryption.FromExistingContainer("somecontainer");
+            var keyFromBlob = EncryptionSettings.FromBlob(keyBlob);
+            var rsaEcryption = RSAEncryption.FromExistingContainer("target");
 
             var decryptedSessionKey = rsaEcryption.DecryptData(keyFromBlob.SessionKey);
 

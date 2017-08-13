@@ -1,8 +1,11 @@
 namespace Encrypt.Config.Encryption.Hybrid {
     public interface IHybridEncryption
     {
-        (EncryptionKey key, byte[] encryptedData) EncryptData(byte[] sessionKey, byte[] data, byte[] Iv);
+        (EncryptionSettings key, byte[] encryptedData) EncryptData(byte[] sessionKey, byte[] data, byte[] Iv);
+    }
 
-        byte[] DecryptData(EncryptionKey encryptionKey, byte[] data);
+    public interface IHybridDecryption
+    {
+        byte[] DecryptData(EncryptionSettings encryptionSettings, byte[] data);
     }
 }
