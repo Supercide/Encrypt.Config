@@ -1,14 +1,10 @@
-using System;
 using System.IO;
-using System.Security.Cryptography;
 using Encrypt.Config.ConsoleHost.Constants;
 using Encrypt.Config.ConsoleHost.Exceptions;
 using Encrypt.Config.Encryption.Asymmetric;
 using Encrypt.Config.Encryption.Hybrid;
 using Encrypt.Config.Encryption.NumberGenerators;
 using Encrypt.Config.Encryption.Symmetric;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
     public class EncryptionState : ConsoleState

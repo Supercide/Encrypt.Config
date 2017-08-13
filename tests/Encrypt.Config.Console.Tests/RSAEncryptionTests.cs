@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using NUnit.Framework;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Text;
 using Encrypt.Config.Encryption.Asymmetric;
 using Encrypt.Config.Encryption.Constants;
 

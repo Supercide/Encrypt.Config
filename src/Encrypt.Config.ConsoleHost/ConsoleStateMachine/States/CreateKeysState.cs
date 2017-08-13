@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Encrypt.Config.ConsoleHost.Constants;
 using Encrypt.Config.ConsoleHost.Exceptions;

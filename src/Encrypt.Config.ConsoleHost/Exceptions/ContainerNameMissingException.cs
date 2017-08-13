@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace Encrypt.Config.ConsoleHost.Exceptions {
     [Serializable]
