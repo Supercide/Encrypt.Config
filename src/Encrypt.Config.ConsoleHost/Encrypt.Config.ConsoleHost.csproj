@@ -51,7 +51,7 @@
     <Compile Include="ConsoleStateMachine\Factories\ExportStateFactory.cs" />
     <Compile Include="ConsoleStateMachine\Factories\IConsoleStateFactory.cs" />
     <Compile Include="ConsoleStateMachine\Factories\EncryptionStateFactory.cs" />
-    <Compile Include="WellKnownCommands.cs" />
+    <Compile Include="Constants\WellKnownCommands.cs" />
     <Compile Include="ConsoleStateMachine\States\ConsoleState.cs" />
     <Compile Include="ConsoleStateMachine\States\CreateKeysState.cs" />
     <Compile Include="ConsoleStateMachine\States\EndState.cs" />
@@ -60,7 +60,7 @@
     <Compile Include="FileEncrypter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WellKnownCommandArguments.cs" />
+    <Compile Include="Constants\WellKnownCommandArguments.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Encrypt.Config.Encryption\Encrypt.Config.Encryption.csproj">

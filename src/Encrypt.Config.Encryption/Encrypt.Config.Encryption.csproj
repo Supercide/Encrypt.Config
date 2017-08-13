@@ -54,6 +54,7 @@
     <Compile Include="Symmetric\ISymmetricKeyEncryption.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Asymmetric\RSAContainerFactory.cs" />
+    <Compile Include="Constants\WellKnownPaths.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

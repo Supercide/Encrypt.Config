@@ -8,6 +8,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
 using Encrypt.Config.Encryption.Asymmetric;
+using Encrypt.Config.Encryption.Constants;
 
 namespace Encrypt.Config.Console.Tests
 {
@@ -23,7 +24,7 @@ namespace Encrypt.Config.Console.Tests
         {
             User = WindowsIdentity.GetCurrent().Name;
 
-            _files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
+            _files = Directory.EnumerateFiles(WellKnownPaths.RSA_MACHINEKEYS)
                               .ToArray();
         }
 
@@ -72,7 +73,7 @@ namespace Encrypt.Config.Console.Tests
 
             rsaEncryption.ExportKey(false);
 
-            var path = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", rsaCryptoServiceProvider.CspKeyContainerInfo.UniqueKeyContainerName);
+            var path = Path.Combine(WellKnownPaths.RSA_MACHINEKEYS, rsaCryptoServiceProvider.CspKeyContainerInfo.UniqueKeyContainerName);
 
                 FileSecurity fSecurity = new FileSecurity(path, AccessControlSections.Access);
 
@@ -107,7 +108,7 @@ namespace Encrypt.Config.Console.Tests
         [OneTimeTearDown]
         public void CleanUp()
         {
-            var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys");
+            var files = Directory.EnumerateFiles(WellKnownPaths.RSA_MACHINEKEYS);
 
             var newFiles = files.Except(_files);
 

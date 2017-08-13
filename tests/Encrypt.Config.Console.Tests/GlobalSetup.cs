@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Encrypt.Config.Encryption.Constants;
 using NUnit.Framework;
 
 namespace Encrypt.Config.Console.Tests
@@ -18,7 +19,7 @@ namespace Encrypt.Config.Console.Tests
         {
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
-            TrackingFiles = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
+            TrackingFiles = Directory.EnumerateFiles(WellKnownPaths.RSA_MACHINEKEYS)
                               .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()))
                               .ToArray();
         }
@@ -26,7 +27,7 @@ namespace Encrypt.Config.Console.Tests
         [OneTimeTearDown]
         public void CleanUp()
         {
-            var files = Directory.EnumerateFiles(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys")
+            var files = Directory.EnumerateFiles(WellKnownPaths.RSA_MACHINEKEYS)
                                  .Concat(Directory.EnumerateFiles(Directory.GetCurrentDirectory()));
 
             var newFiles = files.Except(TrackingFiles);

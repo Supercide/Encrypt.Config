@@ -49,7 +49,7 @@
     <Compile Include="Encryption\HybridEncryptTests\WhenDecryptingData.cs" />
     <Compile Include="Encryption\HybridEncryptTests\WhenEncryptingData.cs" />
     <Compile Include="Encryption\HybridEncryptTests\WhenImportingKey.cs" />
-    <Compile Include="GivenApplication_WhenCreatingKeySets.cs" />
+    <Compile Include="Console\GivenApplication_WhenCreatingKeys.cs" />
     <Compile Include="GivenApplication_WhenEncryptingFile.cs" />
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

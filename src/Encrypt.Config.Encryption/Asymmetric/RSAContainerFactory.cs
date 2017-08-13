@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
+using Encrypt.Config.Encryption.Constants;
 
 namespace Encrypt.Config.Encryption.Asymmetric {
     internal class RSAContainerFactory
@@ -22,7 +23,7 @@ namespace Encrypt.Config.Encryption.Asymmetric {
 
         private static void SetFileAccessRule(string username, string uniqueKeyContainerName)
         {
-            var filePath = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", uniqueKeyContainerName);
+            var filePath = Path.Combine(WellKnownPaths.RSA_MACHINEKEYS, uniqueKeyContainerName);
 
             var fs = new FileSecurity(filePath, AccessControlSections.All);
 

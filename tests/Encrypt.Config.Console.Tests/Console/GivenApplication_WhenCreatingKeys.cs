@@ -6,26 +6,29 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Encrypt.Config.ConsoleHost;
-using Newtonsoft.Json.Linq;
+using Encrypt.Config.Encryption.Constants;
 using NUnit.Framework;
 
-namespace Encrypt.Config.Console.Tests
+namespace Encrypt.Config.Console.Tests.Console
 {
     [TestFixture]
-    public class GivenApplication_WhenCreatingKeySets
+    public class GivenApplication_WhenCreatingKeys
     {
+        private readonly string ExpectedKeyFile = $"{Guid.NewGuid()}";
+
         private readonly string _currentUser;
 
         readonly string containerName = $"{Guid.NewGuid()}";
 
 
-        public GivenApplication_WhenCreatingKeySets()
+        public GivenApplication_WhenCreatingKeys()
         {
             _currentUser = WindowsIdentity.GetCurrent().Name;
 
-            Program.Main(new[]{"create", "keys",
-                $"-{WellKnownCommandArguments.USERNAME}", $"{_currentUser}",
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", "key",
+            Program.Main(new[]{
+                WellKnownCommands.CREATE_KEYS,
+                $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
+                $"-{WellKnownCommandArguments.EXPORT_KEY}", ExpectedKeyFile,
                 $"-{WellKnownCommandArguments.EXPORT_PUBLIC_KEY}",
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName});
         }
@@ -33,7 +36,7 @@ namespace Encrypt.Config.Console.Tests
         [Test]
         public void ThenExportsPublicKey()
         {
-            FileAssert.Exists("key");
+            FileAssert.Exists(ExpectedKeyFile);
         }
 
         [Test]
@@ -47,7 +50,7 @@ namespace Encrypt.Config.Console.Tests
 
             CspKeyContainerInfo info = new CspKeyContainerInfo(cspParameters);
 
-            var containerPath = Path.Combine(@"C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys", info.UniqueKeyContainerName);
+            var containerPath = Path.Combine(WellKnownPaths.RSA_MACHINEKEYS, info.UniqueKeyContainerName);
 
             var controlList = File.GetAccessControl(containerPath);
 
