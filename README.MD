@@ -4,11 +4,11 @@
 JSON Configuration encryption tool
 ## Table of contents
 - [Read Me](./readme.md)
-- [Architecture](./docs/architecture.md)
+- [Architecture](./docs/Architecture.md)
 - Instruction Manual
-    - [Creating Keys](./docs/architecture.md)
-    - [Exporting Keys](./docs/architecture.md)
-    - [Encrypting](./docs/architecture.md)
+    - [Creating Keys](./docs/CreatingKeys.md)
+    - [Exporting Keys](./docs/ExportingKeys.md)
+    - [Encrypting](./docs/Encryption.md)
 
 ## What is Encrypt.Config
 

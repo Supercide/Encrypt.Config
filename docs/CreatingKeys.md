@@ -1,4 +1,4 @@
-[Getting Started](../readme.md) > Creating Keys
+[Getting Started](../README.MD) > Creating Keys
 
 # How to create keys
 

@@ -1,4 +1,4 @@
-[Getting Started](../readme.md) > Architecture
+[Getting Started](../README.MD) > Architecture
 # Architecture
 - .NET Framework 4.7 runtime
 - Windows XP and above
