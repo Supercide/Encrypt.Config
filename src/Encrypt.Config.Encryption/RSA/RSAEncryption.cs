@@ -23,6 +23,9 @@ namespace Encrypt.Config.Encryption.RSA {
         {
             _containerName = containerName;
             _username = username;
+
+            RSAContainerFactory.Create(containerName, username)
+                               .Dispose();
         }
 
         public static RSAEncryption FromNewContainer(string containerName, string username)
@@ -45,7 +48,7 @@ namespace Encrypt.Config.Encryption.RSA {
 
         public string ExportKey(bool includePrivate)
         {
-            using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.Create(_containerName, _username))
+            using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromContainer(_containerName))
             {
                 return rsaCryptoServiceProvider.ToXmlString(includePrivate);
             }
@@ -69,14 +72,7 @@ namespace Encrypt.Config.Encryption.RSA {
 
         public byte[] DecryptData(byte[] data)
         {
-            if(_username == null)
-            {
-                using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromContainer(_containerName))
-                {
-                    return rsaCryptoServiceProvider.Decrypt(data, RSAEncryptionPadding.Pkcs1);
-                }
-            }
-            using(RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.Create(_containerName, _username))
+            using (RSACryptoServiceProvider rsaCryptoServiceProvider = RSAContainerFactory.CreateFromContainer(_containerName))
             {
                 return rsaCryptoServiceProvider.Decrypt(data, RSAEncryptionPadding.Pkcs1);
             }
