@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using NUnit.Framework;
 using System.Security.AccessControl;
+using System.Security.Cryptography;
 using System.Security.Principal;
 using Encrypt.Config.Encryption.Asymmetric;
 using Encrypt.Config.Encryption.Constants;
+using NUnit.Framework;
 
-namespace Encrypt.Config.Console.Tests
+namespace Encrypt.Config.Console.Tests.Encryption.RSAEncryptionTests
 {
 
     [TestFixture]
@@ -28,9 +28,8 @@ namespace Encrypt.Config.Console.Tests
         }
 
         [Test]
-        public void GivenValidData_WhenCreatingContainer_ThenReturnsExportKey()
+        public void GivenValidData_WhenExportingKey_ThenReturnsExportKey()
         {
-            var containerName = $"{Guid.NewGuid()}";
             RSAEncryption encryption = new RSAEncryption();
 
                 var rsaExport = encryption.ExportKey(false);

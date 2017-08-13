@@ -13,13 +13,13 @@ using NUnit.Framework;
 namespace Encrypt.Config.Console.Tests.Console
 {
     [TestFixture]
-    public class KeyCreationTests
+    public class WhenCreatingKeys
     {
         private readonly string ExpectedKeyFile = $"{Guid.NewGuid()}";
 
         private readonly string _currentUser;
 
-        public KeyCreationTests()
+        public WhenCreatingKeys()
         {
             _currentUser = WindowsIdentity.GetCurrent().Name;
         }
@@ -51,7 +51,7 @@ namespace Encrypt.Config.Console.Tests.Console
             Program.Main(new[]{
                 WellKnownCommands.CREATE_KEYS,
                 $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", ExpectedKeyFile,
+                $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", ExpectedKeyFile,
                 $"-{WellKnownCommandArguments.KEY_TYPE_PUBLIC}",
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName});
 
@@ -72,7 +72,7 @@ namespace Encrypt.Config.Console.Tests.Console
             Program.Main(new[]{
                 WellKnownCommands.CREATE_KEYS,
                 $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", ExpectedKeyFile,
+                $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", ExpectedKeyFile,
                 $"-{WellKnownCommandArguments.KEY_TYPE_PRIVATE}",
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName});
 
@@ -93,7 +93,7 @@ namespace Encrypt.Config.Console.Tests.Console
             Program.Main(new[]{
                 WellKnownCommands.CREATE_KEYS,
                 $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", ExpectedKeyFile,
+                $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", ExpectedKeyFile,
                 $"-{WellKnownCommandArguments.KEY_TYPE_PUBLIC}",
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName});
 
@@ -127,7 +127,7 @@ namespace Encrypt.Config.Console.Tests.Console
                 {
                     WellKnownCommands.CREATE_KEYS,
                     $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName,
-                    $"-{WellKnownCommandArguments.EXPORT_KEY}", ExpectedKeyFile,
+                    $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", ExpectedKeyFile,
                     $"-{WellKnownCommandArguments.KEY_TYPE_PRIVATE}",
                 });
             });
@@ -142,7 +142,7 @@ namespace Encrypt.Config.Console.Tests.Console
                 {
                     WellKnownCommands.CREATE_KEYS,
                     $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
-                    $"-{WellKnownCommandArguments.EXPORT_KEY}", ExpectedKeyFile,
+                    $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", ExpectedKeyFile,
                     $"-{WellKnownCommandArguments.KEY_TYPE_PUBLIC}"
                 });
             });
@@ -156,7 +156,7 @@ namespace Encrypt.Config.Console.Tests.Console
             Program.Main(new[]{
                 WellKnownCommands.CREATE_KEYS,
                 $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", ExpectedKeyFile,
+                $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", ExpectedKeyFile,
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName});
 
             var key = File.ReadAllText(ExpectedKeyFile);

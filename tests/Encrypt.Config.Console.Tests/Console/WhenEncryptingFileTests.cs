@@ -11,17 +11,17 @@ using Encrypt.Config.Encryption.Symmetric;
 using NUnit.Framework;
 
 namespace Encrypt.Config.Console.Tests.Console {
-    public class EncryptionTests
+    public class WhenEncryptingFileTests
     {
         private readonly string _currentUser = WindowsIdentity.GetCurrent().Name;
         private readonly string _keyFile = $"{Guid.NewGuid()}";
         private readonly string _containerName = $"{Guid.NewGuid()}";
 
-        public EncryptionTests()
+        public WhenEncryptingFileTests()
         {
             Program.Main(new[]{"create",
                 $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
-                $"-{WellKnownCommandArguments.EXPORT_KEY}", _keyFile,
+                $"-{WellKnownCommandArguments.EXPORT_KEY_PATH}", _keyFile,
                 $"-{WellKnownCommandArguments.KEY_TYPE_PUBLIC}",
                 $"-{WellKnownCommandArguments.CONTAINER_NAME}", _containerName});
         }

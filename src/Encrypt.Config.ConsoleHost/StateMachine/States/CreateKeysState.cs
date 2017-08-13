@@ -20,7 +20,7 @@ namespace Encrypt.Config.ConsoleHost.StateMachine.States {
 
             var rsaEncryption = new RSAEncryption(containerName, username);
 
-            if(context.Arguments.Any(kvp => kvp.Key == WellKnownCommandArguments.EXPORT_KEY))
+            if(context.Arguments.Any(kvp => kvp.Key == WellKnownCommandArguments.EXPORT_KEY_PATH))
             {
                 context.State = ExportState.CreateWithContainer(rsaEncryption);
             } else

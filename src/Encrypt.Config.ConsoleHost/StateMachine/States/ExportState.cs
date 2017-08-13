@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Encrypt.Config.ConsoleHost.Constants;
+using Encrypt.Config.ConsoleHost.Exceptions;
 using Encrypt.Config.Encryption.Asymmetric;
 
 namespace Encrypt.Config.ConsoleHost.StateMachine.States {
@@ -15,10 +16,12 @@ namespace Encrypt.Config.ConsoleHost.StateMachine.States {
 
         public override void Handle(Context context)
         {
-            if(!context.Arguments.TryGetValue(WellKnownCommandArguments.EXPORT_KEY, out var filePath))
+            if(!context.Arguments.TryGetValue(WellKnownCommandArguments.EXPORT_KEY_PATH, out var filePath))
             {
-                throw new InvalidOperationException();
+                throw new MissingFilePathException("Missing decryption key path. Try export --help for more information");
             }
+
+            _rsaEncryption = _rsaEncryption ?? CreateContainer(context);
 
             var exportPrivateKey = context.Arguments.ContainsKey(WellKnownCommandArguments.KEY_TYPE_PRIVATE);
 
@@ -27,6 +30,16 @@ namespace Encrypt.Config.ConsoleHost.StateMachine.States {
             File.WriteAllText(filePath, keyData);
 
             SetEndState(context);
+        }
+
+        private RSAEncryption CreateContainer(Context context)
+        {
+            if (!context.Arguments.TryGetValue(WellKnownCommandArguments.CONTAINER_NAME, out var containerName))
+            {
+                throw new ContainerNameMissingException("Missing container name. Try export --help for more information");
+            }
+
+            return RSAEncryption.FromExistingContainer(containerName);
         }
 
         public static ExportState CreateWithContainer(RSAEncryption rsaEncryption)

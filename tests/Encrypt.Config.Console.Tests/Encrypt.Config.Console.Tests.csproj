@@ -46,14 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Console\WhenExportingKey.cs" />
     <Compile Include="Encryption\HybridEncryptTests\WhenDecryptingData.cs" />
     <Compile Include="Encryption\HybridEncryptTests\WhenEncryptingData.cs" />
     <Compile Include="Encryption\HybridEncryptTests\WhenImportingKey.cs" />
-    <Compile Include="Console\KeyCreationTests.cs" />
-    <Compile Include="Console\EncryptionTests.cs" />
+    <Compile Include="Console\WhenCreatingKeys.cs" />
+    <Compile Include="Console\WhenEncryptingFileTests.cs" />
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RSAEncryptionTests.cs" />
+    <Compile Include="Encryption\RSAEncryptionTests\RSAEncryptionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Encrypt.Config.ConsoleHost\Encrypt.Config.ConsoleHost.csproj">
