@@ -42,7 +42,7 @@ Creates a RSA container at `C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys` wit
 
 #### command
 
-`create -usr <Application NT Identity> -nme <Windows RSA Container name> -exp <File name and path of exported key> -(pb|pv)`
+`create -usr <Application NT Identity> -nme <Windows RSA Container name> -exp <path of exported key> -pb`
 
 #### Example
 
