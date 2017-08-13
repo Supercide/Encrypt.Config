@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Principal;
-using System.Threading.Tasks;
 using Encrypt.Config.ConsoleHost;
 using Encrypt.Config.ConsoleHost.Constants;
 using Encrypt.Config.ConsoleHost.Exceptions;
@@ -23,6 +22,25 @@ namespace Encrypt.Config.Console.Tests.Console
         public KeyCreationTests()
         {
             _currentUser = WindowsIdentity.GetCurrent().Name;
+        }
+
+        [Test]
+        public void WhenCreatingKeys_WithNoExport_ThenCreatesKeyContainer()
+        {
+            var containerName = $"{Guid.NewGuid()}";
+
+            Program.Main(new[]{
+                WellKnownCommands.CREATE_KEYS,
+                $"-{WellKnownCommandArguments.USERNAME}", _currentUser,
+                $"-{WellKnownCommandArguments.CONTAINER_NAME}", containerName});
+
+            CspKeyContainerInfo info = new CspKeyContainerInfo(new CspParameters
+            {
+                KeyContainerName = containerName,
+                Flags = CspProviderFlags.UseMachineKeyStore
+            });
+            
+            Assert.That(info.KeyContainerName, Is.EqualTo(containerName));
         }
 
         [Test]

@@ -21,20 +21,12 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
 
             var rsaEncryption = new RSAEncryption(containerName, username);
 
-            try
+            if(context.Arguments.Any(kvp => kvp.Key == WellKnownCommandArguments.EXPORT_KEY))
             {
-                if(context.Arguments.Any(kvp => kvp.Key == WellKnownCommandArguments.EXPORT_KEY))
-                {
-                    context.State = ExportState.CreateWithContainer(rsaEncryption);
-                } else
-                {
-                    SetEndState(context);
-                }
-
-            } catch(Exception e)
+                context.State = ExportState.CreateWithContainer(rsaEncryption);
+            } else
             {
-                Console.WriteLine(e.Message);
-                throw;
+                SetEndState(context);
             }
         }
     }
