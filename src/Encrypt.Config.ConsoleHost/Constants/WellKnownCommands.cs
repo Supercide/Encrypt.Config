@@ -4,6 +4,5 @@ namespace Encrypt.Config.ConsoleHost.Constants {
         public const string CREATE_KEYS = "create";
         public const string EXPORT_KEY = "export";
         public const string ENCRYPT_FILE = "encrypt";
-        public const string DECRYPT_FILE = "decrypt";
     }
 }
