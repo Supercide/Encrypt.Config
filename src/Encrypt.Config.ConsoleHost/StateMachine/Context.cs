@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Encrypt.Config.ConsoleHost.ConsoleStateMachine.States;
+using Encrypt.Config.ConsoleHost.StateMachine.States;
 
-namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine {
+namespace Encrypt.Config.ConsoleHost.StateMachine {
     public class Context
     {
         public ConsoleState State { get; set; }

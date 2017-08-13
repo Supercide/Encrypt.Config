@@ -6,7 +6,7 @@ using Encrypt.Config.Encryption.Hybrid;
 using Encrypt.Config.Encryption.NumberGenerators;
 using Encrypt.Config.Encryption.Symmetric;
 
-namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
+namespace Encrypt.Config.ConsoleHost.StateMachine.States {
     public class EncryptionState : ConsoleState
     {
         public override void Handle(Context context)

@@ -46,17 +46,17 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="ConsoleStateMachine\Context.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\CreateStateFactory.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\ExportStateFactory.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\IConsoleStateFactory.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\EncryptionStateFactory.cs" />
+    <Compile Include="StateMachine\Context.cs" />
+    <Compile Include="StateMachine\Factories\CreateStateFactory.cs" />
+    <Compile Include="StateMachine\Factories\ExportStateFactory.cs" />
+    <Compile Include="StateMachine\Factories\IConsoleStateFactory.cs" />
+    <Compile Include="StateMachine\Factories\EncryptionStateFactory.cs" />
     <Compile Include="Constants\WellKnownCommands.cs" />
-    <Compile Include="ConsoleStateMachine\States\ConsoleState.cs" />
-    <Compile Include="ConsoleStateMachine\States\CreateKeysState.cs" />
-    <Compile Include="ConsoleStateMachine\States\EndState.cs" />
-    <Compile Include="ConsoleStateMachine\States\ExportState.cs" />
-    <Compile Include="ConsoleStateMachine\States\EncryptionState.cs" />
+    <Compile Include="StateMachine\States\ConsoleState.cs" />
+    <Compile Include="StateMachine\States\CreateKeysState.cs" />
+    <Compile Include="StateMachine\States\EndState.cs" />
+    <Compile Include="StateMachine\States\ExportState.cs" />
+    <Compile Include="StateMachine\States\EncryptionState.cs" />
     <Compile Include="Exceptions\ContainerNameMissingException.cs" />
     <Compile Include="Exceptions\MissingFilePathException.cs" />
     <Compile Include="Exceptions\MissingKeyException.cs" />

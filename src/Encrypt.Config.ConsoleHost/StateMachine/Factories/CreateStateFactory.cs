@@ -1,7 +1,7 @@
-using Encrypt.Config.ConsoleHost.ConsoleStateMachine.States;
 using Encrypt.Config.ConsoleHost.Constants;
+using Encrypt.Config.ConsoleHost.StateMachine.States;
 
-namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.Factories {
+namespace Encrypt.Config.ConsoleHost.StateMachine.Factories {
     public class CreateStateFactory : IConsoleStateFactory
     {
         public bool CanParse(string command)

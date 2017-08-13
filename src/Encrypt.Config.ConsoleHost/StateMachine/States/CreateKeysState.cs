@@ -3,7 +3,7 @@ using Encrypt.Config.ConsoleHost.Constants;
 using Encrypt.Config.ConsoleHost.Exceptions;
 using Encrypt.Config.Encryption.Asymmetric;
 
-namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
+namespace Encrypt.Config.ConsoleHost.StateMachine.States {
     public class CreateKeysState : ConsoleState {
 
         public override void Handle(Context context)

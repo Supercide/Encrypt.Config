@@ -1,4 +1,4 @@
-namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
+namespace Encrypt.Config.ConsoleHost.StateMachine.States {
     public abstract class ConsoleState
     {
         public abstract void Handle(Context context);
