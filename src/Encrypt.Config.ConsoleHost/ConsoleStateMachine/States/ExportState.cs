@@ -23,7 +23,7 @@ namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
                     throw new InvalidOperationException();
                 }
 
-                var exportPrivateKey = context.Arguments.ContainsKey(WellKnownCommandArguments.EXPORT_PRIVATE_KEY);
+                var exportPrivateKey = context.Arguments.ContainsKey(WellKnownCommandArguments.KEY_TYPE_PRIVATE);
 
                 if (!exportPrivateKey && !context.Arguments.ContainsKey(WellKnownCommandArguments.KEY_TYPE_PUBLIC))
                 {
