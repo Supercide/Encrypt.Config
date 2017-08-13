@@ -2,6 +2,13 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/gfh5l8uq94ws732x/branch/master?svg=true)](https://github.com/Supercide/Encrypt.Config/tree/master)
 
 JSON Configuration encryption tool
+## Table of contents
+- [Read Me](./readme.md)
+- [Architecture](./docs/architecture.md)
+- Instruction Manual
+    - [Creating Keys](./docs/architecture.md)
+    - [Exporting Keys](./docs/architecture.md)
+    - [Encrypting](./docs/architecture.md)
 
 ## What is Encrypt.Config
 
@@ -12,7 +19,7 @@ Check out the [Docs](/docs) folder for instructions on how to use the applicatio
 
 ## How it works
 
-![Diagram of how it works](./Diagram-How.jpg)
+![Diagram of how it works](./docs/images/Diagram-How.jpg)
 
 1. [Create](/docs/creatingkeys.md) the RSA Private and public keys on the machine where the encrypted configuration files need to be stored.
 
