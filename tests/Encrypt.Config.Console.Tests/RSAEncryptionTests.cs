@@ -7,7 +7,7 @@ using NUnit.Framework;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
-using Encrypt.Config.Encryption.RSA;
+using Encrypt.Config.Encryption.Asymmetric;
 
 namespace Encrypt.Config.Console.Tests
 {

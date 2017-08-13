@@ -64,14 +64,6 @@
       <Project>{32CAF4FC-2216-4964-946B-5E3EA7AAA849}</Project>
       <Name>Encrypt.Config.Encryption</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Encrypt.Config.Json\Encrypt.Config.Json.csproj">
-      <Project>{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}</Project>
-      <Name>Encrypt.Config.Json</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Encrypt.Config.RSA\Encrypt.Config.RSA.csproj">
-      <Project>{1475C531-0697-42A2-B2F0-1A35A14EAB0B}</Project>
-      <Name>Encrypt.Config.RSA</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="appsettings.json">

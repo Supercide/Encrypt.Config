@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Encrypt.Config.Encryption.RSA;
+using Encrypt.Config.Encryption.Asymmetric;
 
 namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
     public class CreateKeysState : ConsoleState {

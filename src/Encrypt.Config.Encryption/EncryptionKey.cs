@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Encrypt.Config.Encryption.Asymmetric {
+namespace Encrypt.Config.Encryption {
     public class EncryptionKey
     {
         private const int SESSION_KEY_INDEX = 0;

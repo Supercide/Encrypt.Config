@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Encrypt.Config.Encryption.Random
+namespace Encrypt.Config.Encryption.NumberGenerators
 {
     public class RNGCryptoRandomBytesGenerator : IGenerateRandomBytes
     {

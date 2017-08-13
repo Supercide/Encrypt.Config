@@ -6,8 +6,6 @@ using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Encrypt.Config.ConsoleHost;
-using Encrypt.Config.Encryption.Random;
-using Encrypt.Config.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 

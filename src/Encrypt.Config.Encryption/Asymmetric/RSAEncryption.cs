@@ -1,7 +1,6 @@
 using System.Security.Cryptography;
-using Encrypt.Config.Encryption.Asymmetric;
 
-namespace Encrypt.Config.Encryption.RSA {
+namespace Encrypt.Config.Encryption.Asymmetric {
     public class RSAEncryption : IAsymmetricKeyEncryption
     {
         private readonly string _containerName;

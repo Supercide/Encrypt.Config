@@ -1,6 +1,8 @@
 using System.Security.Cryptography;
+using Encrypt.Config.Encryption.Asymmetric;
+using Encrypt.Config.Encryption.Symmetric;
 
-namespace Encrypt.Config.Encryption.Asymmetric {
+namespace Encrypt.Config.Encryption.Hybrid {
     public class HybridEncryption : IHybridEncryption
     {
         private readonly IAsymmetricKeyEncryption _asymmetricKeyEncryption;

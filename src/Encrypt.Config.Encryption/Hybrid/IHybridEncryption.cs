@@ -1,4 +1,4 @@
-namespace Encrypt.Config.Encryption.Asymmetric {
+namespace Encrypt.Config.Encryption.Hybrid {
     public interface IHybridEncryption
     {
         (EncryptionKey key, byte[] encryptedData) EncryptData(byte[] sessionKey, byte[] data, byte[] Iv);

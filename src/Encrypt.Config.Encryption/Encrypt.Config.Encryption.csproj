@@ -40,17 +40,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Asymmetric\EncryptionKey.cs" />
-    <Compile Include="Asymmetric\HybridEncryption.cs" />
-    <Compile Include="Asymmetric\IHybridEncryption.cs" />
-    <Compile Include="RSA\RSAEncryption.cs" />
+    <Compile Include="..\..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="EncryptionKey.cs" />
+    <Compile Include="Hybrid\HybridEncryption.cs" />
+    <Compile Include="Hybrid\IHybridEncryption.cs" />
+    <Compile Include="Asymmetric\RSAEncryption.cs" />
     <Compile Include="Symmetric\AESEncryption.cs" />
-    <Compile Include="Random\RNGCryptoRandomBytesGenerator.cs" />
-    <Compile Include="Random\IGenerateRandomBytes.cs" />
+    <Compile Include="NumberGenerators\RNGCryptoRandomBytesGenerator.cs" />
+    <Compile Include="NumberGenerators\IGenerateRandomBytes.cs" />
     <Compile Include="Asymmetric\IAsymmetricKeyEncryption.cs" />
     <Compile Include="Symmetric\ISymmetricKeyEncryption.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RSA\RSAContainerFactory.cs" />
+    <Compile Include="Asymmetric\RSAContainerFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

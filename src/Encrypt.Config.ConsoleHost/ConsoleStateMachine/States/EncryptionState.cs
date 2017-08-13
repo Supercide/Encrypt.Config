@@ -2,10 +2,9 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using Encrypt.Config.Encryption.Asymmetric;
-using Encrypt.Config.Encryption.Random;
-using Encrypt.Config.Encryption.RSA;
+using Encrypt.Config.Encryption.Hybrid;
+using Encrypt.Config.Encryption.NumberGenerators;
 using Encrypt.Config.Encryption.Symmetric;
-using Encrypt.Config.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

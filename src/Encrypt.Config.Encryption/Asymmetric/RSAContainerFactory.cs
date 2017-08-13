@@ -3,12 +3,12 @@ using System.IO;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 
-namespace Encrypt.Config.Encryption.RSA {
+namespace Encrypt.Config.Encryption.Asymmetric {
     internal class RSAContainerFactory
     {
         public static RSACryptoServiceProvider Create(string containerName, string username)
         {
-            var cspParams = CreateCspParamerters(containerName);
+            var cspParams = CreateCspParameters(containerName);
 
             RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(2048, cspParams)
             {
@@ -40,7 +40,7 @@ namespace Encrypt.Config.Encryption.RSA {
             File.SetAccessControl(filePath, fs);
         }
 
-        private static CspParameters CreateCspParamerters(string containerName)
+        private static CspParameters CreateCspParameters(string containerName)
         {
             CspParameters cspParams = new CspParameters
             {
@@ -54,7 +54,7 @@ namespace Encrypt.Config.Encryption.RSA {
 
         public static RSACryptoServiceProvider CreateFromPublicKey(string key)
         {
-            CspParameters cspParams = CreateCspParamerters($"{Guid.NewGuid()}");
+            CspParameters cspParams = CreateCspParameters($"{Guid.NewGuid()}");
 
             RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(cspParams)
             {
@@ -68,7 +68,7 @@ namespace Encrypt.Config.Encryption.RSA {
 
         public static RSACryptoServiceProvider CreateFromContainer(string containerName)
         {
-            CspParameters cspParams = CreateCspParamerters(containerName);
+            CspParameters cspParams = CreateCspParameters(containerName);
 
             RSACryptoServiceProvider rsaProvider = new RSACryptoServiceProvider(cspParams)
             {

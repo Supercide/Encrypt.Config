@@ -1,7 +1,6 @@
 using System;
 using System.IO;
-using System.Security.Cryptography;
-using Encrypt.Config.Encryption.RSA;
+using Encrypt.Config.Encryption.Asymmetric;
 
 namespace Encrypt.Config.ConsoleHost.ConsoleStateMachine.States {
     public class ExportState : ConsoleState {

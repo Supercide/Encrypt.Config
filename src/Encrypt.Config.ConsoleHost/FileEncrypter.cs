@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using Encrypt.Config.Encryption.Asymmetric;
-using Encrypt.Config.Encryption.Random;
-using Newtonsoft.Json.Linq;
-using Encrypt.Config.Encryption.Symmetric;
+﻿using System.IO;
+using Encrypt.Config.Encryption;
+using Encrypt.Config.Encryption.Hybrid;
+using Encrypt.Config.Encryption.NumberGenerators;
 
-namespace Encrypt.Config.Json
+namespace Encrypt.Config.ConsoleHost
 {
     public class FileEncrypter
     {

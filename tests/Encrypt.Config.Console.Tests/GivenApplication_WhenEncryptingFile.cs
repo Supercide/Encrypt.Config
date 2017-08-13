@@ -3,8 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using Encrypt.Config.ConsoleHost;
+using Encrypt.Config.Encryption;
 using Encrypt.Config.Encryption.Asymmetric;
-using Encrypt.Config.Encryption.RSA;
+using Encrypt.Config.Encryption.Hybrid;
 using Encrypt.Config.Encryption.Symmetric;
 using NUnit.Framework;
 
