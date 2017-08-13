@@ -46,7 +46,7 @@ namespace Encrypt.Config.Encryption.Symmetric {
                                                                                       aesCryptoServiceProvider.IV);
 
                 using (MemoryStream msDecrypt = new MemoryStream())
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Write))
                     {
                         csDecrypt.Write(data, 0, data.Length);
                         csDecrypt.FlushFinalBlock();
