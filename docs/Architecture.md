@@ -1,4 +1,4 @@
-# Constraints
+# Architecture
 - .NET Framework 4.7 runtime
 - Windows XP and above
 - NTFS partition 
