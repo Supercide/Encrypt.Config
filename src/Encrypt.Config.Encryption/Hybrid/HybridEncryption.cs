@@ -4,7 +4,6 @@ using Encrypt.Config.Encryption.Asymmetric;
 using Encrypt.Config.Encryption.Symmetric;
 
 namespace Encrypt.Config.Encryption.Hybrid {
-    // TODO: Sign data with private key
 
     public class HybridEncryption : IHybridEncryption
     {
