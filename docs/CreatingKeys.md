@@ -1,4 +1,4 @@
-[Getting Started](../README.MD) > Creating Keys
+[Getting Started](../README.MD) > Creating Keys > [Encrypting Files](./Encryption.md) > [Exporting Keys](./ExportingKeys.md)
 
 # Are my keys safe
 The main dangers that come with encryption is somebody getting a hold of your private keys. To help prevent this from happening Encrypt config stores all private keys in windows RSA key containers with additional access control rules to restrict access to only authorized users
@@ -38,11 +38,11 @@ Where the application nt identity is the identity of which your web application.
 
 ##### Example:
 ```
-create -u desktop/webApplication -c webapp-encryption-keys -e encryption.key
+create -u webserver/HelloWorldApi -c helloWorldApi-encryption-keys -e encryption.key
 ```
 
 This will produce a public key needed for the file encryption. This key needs to be accessible by the deployment server to be able to encrypt files before deploying. 
 
 >It should be noted that this key will only encrypt data for the application it was created for. If you need to encrypt data for any other application then you must repeate the process apart from creating the deployment siging key as that key is shared
 
-[Getting Started](../README.MD) > Creating Keys > [Encrypting Files](./Encryption.md)
+[Getting Started](../README.MD) > Creating Keys > [Encrypting Files](./Encryption.md) > [Exporting Keys](./ExportingKeys.md)

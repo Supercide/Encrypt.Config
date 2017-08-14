@@ -1,25 +1,25 @@
 # Encrypt.Config
 [![Build status](https://ci.appveyor.com/api/projects/status/gfh5l8uq94ws732x/branch/master?svg=true)](https://github.com/Supercide/Encrypt.Config/tree/master)
 
-JSON Configuration encryption tool
+File encryption tool aimed at encrypting coniguration files (Json/XML/text/ect..).
 ## Table of contents
-- [Read Me](./readme.md)
+- [Read Me](./README.MD)
 - [Architecture](./docs/Architecture.md)
 - Instruction Manual
     - [Creating Keys](./docs/CreatingKeys.md)
-    - [Exporting Keys](./docs/ExportingKeys.md)
     - [Encrypting](./docs/Encryption.md)
+    - [Exporting Keys](./docs/ExportingKeys.md)
 
 ## What is Encrypt.Config
 
 In production environments, configuration files will more than likely contain sensitive information. Encrypt.Config is a tool designed to help protect configuration files by encrypting them. When used in combination with [Decrypt.Config](https://github.com/Supercide/Decrypt.Config) an ASP Core application will be able to use any encrypted files produced by this tool. 
 
 ## Getting Started 
-Encryption comes with its own set of unique challenges. Encrypt.Config Aims to make life a little easier by simplyfiy the process of Key management, Key distrubution and Trust. Read more below on how it does this or dive right into the code by checking out the docs [Show me the code!!!](/docs).
+Encryption comes with its own set of unique challenges. Encrypt.Config Aims to make life a little easier by simplyfiy the process of Key management, Key distrubution and Trust. Read more below on how it does this or dive right into the code by checking out the docs [Show me the code!!!](./docs).
 
 ## Key distribution 
 #### how do we convey keys to those who need them to establish secure communication? 
-Asymmetric keys solves this issue by separating the keys used for encryption and decryption. The encryption key can be made public but the decryption key must be kept private. Asymmetric encryption is done via RSA.
+Asymmetric algorythms solves this issue by separating keys used for encryption and decryption into Public and Private keys. The encryption key can be made public but the decryption key must be kept private. Ths tool uses RSA to create public and private keys.
 
 ## Key management
 #### how do we preserve key safety and make them available as needed? 

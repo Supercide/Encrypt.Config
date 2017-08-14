@@ -1,4 +1,4 @@
-[Getting Started](../README.MD) > [Creating Keys](./CreatingKeys.md) > Encryption
+[Getting Started](../README.MD) > [Creating Keys](./CreatingKeys.md) > Encryption > [Exporting Keys](./ExportingKeys.md)
 
 ## Encrypting files
 Now that the hard part is done you can start encrypting files to your hearts content. To encrypt a file run the following command on the deployment server:
@@ -19,3 +19,5 @@ This will produce a encrypted file that can on that can only be decrypted by the
 
 
 The web application will be able to use its private key and the key we produced during encryption to decrypt the file. No other application will be able to decrypt this file.
+
+[Getting Started](../README.MD) > [Creating Keys](./CreatingKeys.md) > Encryption > [Exporting Keys](./ExportingKeys.md)
