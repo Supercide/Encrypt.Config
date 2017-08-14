@@ -1,22 +1,42 @@
 [Getting Started](../README.MD) > Creating Keys
 
-# Walk through
-the following document will walk you through creating keys for encrypting and decrypting files. In total there are 3 keys and a hash, each has there specific use cases:
-
-- Private keys are used for decrypting session keys which in turn are used to decrypt files. Private keys should only be stored on the same machine where the application is running. 
-
-- Public keys are used to encrypt session keys. These keys can be used from any machine whishing to encrypt a file.
-
-- Symmetric keys are used to encrypt actual file contents. compared to Asymmetric keys symmetric keys can encrypt large file more efficiently.
-
-- HMAC Hash ensures that the encrypted session key wasn't damaged or tamperer with in any way
-
 # Are my keys safe
 The main dangers that come with encryption is somebody getting a hold of your private keys. To help prevent this from happening Encrypt config stores all private keys in windows RSA key containers with additional access control rules to restrict access to only authorized users
 
 >Key containers provide the most secure way to persist cryptographic keys and keep them secret from malicious third parties. Click [here](https://msdn.microsoft.com/library/9a179f38-8fb7-4442-964c-fb7b9f39f5b9) for more details.
 
 >It is recommended that you only secure sensitive information using protected configuration on file systems formatted using NTFS, so that you can restrict access to encryption key information using ACLs.
+
+# Walkthrough
+In this example we will take the common scenario of a deployment server and a web application server.
+
+## Step 1 - Creating the signing keys
+The first step is to create a set of signing keys. These keys will ensure that the encrypted message came from a trusted source.
+
+On your deployment server run the following command:
+
+`create -usr <Application NT Identity> -nme <Windows RSA Container name> -exp <Path to export signing key>`
+
+Where the application nt identity is the identity of which your deployment tool runs under. Name the RSA container descriptive enough that you know this is the container for the signing keys. 
+
+Example:
+```
+create -usr desktop/deploymentServer -nme deployment-signing-keys -exp sig.key
+```
+
+This command will generate a 2048 bit public/private key stored securly in a RSA container. It also exports the public key needed for verification. Store this key in a protected place, somewhere where the web application server can get access.
+
+Repeat this process on the web application server, this time when the public key has been exported place it somewhere protected where the deployment server has access.
+
+## Step 2 - Creating the Deployment server encryption keys
+
+Simmilar to Step one we are now going to create the keys needed for file encryption.
+
+On the web application server run the following command
+
+`create -usr <Application NT Identity> -nme <Windows RSA Container name> -exp <Path to export signing key>`
+
+Where the application nt identity is the identity of which your deployment tool runs under. Name the RSA container descriptive enough that you know this is the container for the signing keys. 
 
 # Commands & examples
 

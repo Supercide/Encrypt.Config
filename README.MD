@@ -51,7 +51,7 @@ When Bob recieves the message he will:
     - using the session key with the IV Bob and proceed to decrypt the message
 
 # What doesn't it solve?
-For now Encypt.Config does not manage storing of the public keys securly, normally this wouldn't be an issue but if a attacker was able comprimise both sets of public keys (public signing key and public encryption key) theoretically they would be able to forge messages between systems. eg
+For now Encypt.Config does not manage storing of the public keys securly, we leave this up to you to figure out. This means if you store them with inadaqute protection and an attacker gains physical access to your keys theoretically they would be able to forge messages between systems by replacing these keys. eg
 
 1. Attacker replaces Bob's copy of Alice's public signing key with there own
 2. Attacker uses Bob's public encryption key and Alice's replaced signing key to create HMAC, IV, Signature and encrypted data
