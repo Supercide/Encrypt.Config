@@ -10,7 +10,7 @@ Now that the hard part is done you can start encrypting files to your hearts con
 encrypt -i encryption.key -s octopus-signing-key -f appsettings.json -o appsettings.encrypted
 ```
 
-This will produce a encrypted file that can on that can only be decrypted by the application whos key was used. It will also produce a decryption key, don't worry this key alone cannot decrypt the message and there is nothing sensitive in it. You can read more about the purpose of this file [Here](../README.MD) 
+This will produce a encrypted file that can on that can only be decrypted by the application who's key was used. It will also produce a decryption key, don't worry this key alone cannot decrypt the message and there is nothing sensitive in it. You can read more about the purpose of this file [Here](../README.MD) 
 > the decryption key we produce in this step is comprised of:
 >  - Encrypted session key 
 >  - IV (initiation vector)
