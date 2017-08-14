@@ -51,14 +51,12 @@ When Bob recieves the message he will:
     - using the session key with the IV Bob and proceed to decrypt the message
 
 # What doesn't it solve?
-For now Encypt.Config does not manage storing of the public keys securly, we leave this up to you to figure out. This means if you store them with inadaqute protection and an attacker gains physical access to your keys theoretically they would be able to forge messages between systems by replacing these keys. eg
+For now Encypt.Config does not manage storing of the public keys securly, we leave this up to you to figure out. This means if you store them with inadaqute protection and an attacker gains physical access to your keys theoretically they would be able to forge messages between systems by replacing these keys.
 
-1. Attacker replaces Bob's copy of Alice's public signing key with there own
-2. Attacker uses Bob's public encryption key and Alice's replaced signing key to create HMAC, IV, Signature and encrypted data
-3. Attacker sends these to Bob. Bob accepts and thinks these have come from alice
-4. World burns!
+##### Example:
+Attacker gains access to Bob's pc, replacing Alice's public key with there own. Attacker creates a message, encrypts it with Alice's public key and signs it with there own signature key. Attacker also gains access to Alice's machine and swaps Bob's signature key with there key. Attacker can now send messages from Bobs machine to Alice's machine tricking Alice to believing the message came from Bob
 
-You may be able to prevent this from happening through the use of DPAPI, NTFS ACL's or EFS
+You may be able to prevent this from happening through the use of DPAPI, NTFS ACL's or EFS but some thought will be require on storing public keys.
 
 # License
 

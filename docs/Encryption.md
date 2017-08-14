@@ -1,11 +1,21 @@
-[Getting Started](../README.MD) > Encryption
-# Walk through
-the following document will walk you through encrypting files. If you haven't already read how to create keys check it out [here](./CreatingKeys.md)
+[Getting Started](../README.MD) > [Creating Keys](./CreatingKeys.md) > Encryption
 
-There are 3 steps Encrypt config goes through when encrypting files.
+## Encrypting files
+Now that the hard part is done you can start encrypting files to your hearts content. To encrypt a file run the following command on the deployment server:
 
-1. Create a session key. This key will be used to do the actual file encryption
-2. Encrypt the file using the session key.
-3. Encrypt the session key. It is vital to encrypt the session key before it is distributed as it is used for decrypting the file
-4. Create a hmac hash of the encrypted data using the unencrypted session key. this ensures the encrypted data is still intact.
-5. Sign the data with the machines private key
+`encrypt -i <Path to apps public encryption key> -s <name of the signature container> -f <file to encrypt> -o <file to save encrypted file>`
+
+##### Example:
+```
+encrypt -i encryption.key -s octopus-signing-key -f appsettings.json -o appsettings.encrypted
+```
+
+This will produce a encrypted file that can on that can only be decrypted by the application whos key was used. It will also produce a decryption key, don't worry this key alone cannot decrypt the message and there is nothing sensitive in it. You can read more about the purpose of this file [Here](../README.MD) 
+> the decryption key we produce in this step is comprised of:
+>  - Encrypted session key 
+>  - IV (initiation vector)
+>  - HMAC
+>  - session key signature
+
+
+The web application will be able to use its private key and the key we produced during encryption to decrypt the file. No other application will be able to decrypt this file.

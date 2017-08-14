@@ -11,70 +11,38 @@ The main dangers that come with encryption is somebody getting a hold of your pr
 In this example we will take the common scenario of a deployment server and a web application server.
 
 ## Step 1 - Creating the signing keys
-The first step is to create a set of signing keys. These keys will ensure that the encrypted message came from a trusted source.
+The first step is to create a set of signing keys. These keys will ensure that the encrypted message came from a trusted source, in our instance we want to verify that encrypted files have come from our deployment server.
 
 On your deployment server run the following command:
 
-`create -usr <Application NT Identity> -nme <Windows RSA Container name> -exp <Path to export signing key>`
+`create -u <Application NT Identity> -c <Windows RSA Container name> -e <Path to export signing key>`
 
 Where the application nt identity is the identity of which your deployment tool runs under. Name the RSA container descriptive enough that you know this is the container for the signing keys. 
 
-Example:
+##### Example:
 ```
-create -usr desktop/deploymentServer -nme deployment-signing-keys -exp sig.key
+create -u deploymentServer/OctopusDeploy -c octopus-signing-key -e sig.key
 ```
 
-This command will generate a 2048 bit public/private key stored securly in a RSA container. It also exports the public key needed for verification. Store this key in a protected place, somewhere where the web application server can get access.
+This command will generate a 2048 bit public/private key stored securly in a RSA container. It also exports the public key needed for verification. Store this key somewhere where the it is accessible to the application
 
-Repeat this process on the web application server, this time when the public key has been exported place it somewhere protected where the deployment server has access.
-
-## Step 2 - Creating the Deployment server encryption keys
+## Step 2 - Creating the encryption keys
 
 Simmilar to Step one we are now going to create the keys needed for file encryption.
 
 On the web application server run the following command
 
-`create -usr <Application NT Identity> -nme <Windows RSA Container name> -exp <Path to export signing key>`
+`create -u <Application NT Identity> -c <Windows RSA Container name> -e <Path to export encryption key>`
 
-Where the application nt identity is the identity of which your deployment tool runs under. Name the RSA container descriptive enough that you know this is the container for the signing keys. 
+Where the application nt identity is the identity of which your web application. Name the RSA container descriptive enough that you know this is the container for the encrypting/decryping files.
 
-# Commands & examples
-
-### Create Public/Private keys 
-
-#### command
-
-`create -usr <Application NT Identity> -nme <Windows RSA Container name>`
-
-#### Example
-
+##### Example:
 ```
-# create public private keys
-
-create -usr desktop/webapplication -nme webapplication-config
+create -u desktop/webApplication -c webapp-encryption-keys -e encryption.key
 ```
 
-#### Response
+This will produce a public key needed for the file encryption. This key needs to be accessible by the deployment server to be able to encrypt files before deploying. 
 
-Creates a RSA container at `C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys` with limited access rules
+>It should be noted that this key will only encrypt data for the application it was created for. If you need to encrypt data for any other application then you must repeate the process apart from creating the deployment siging key as that key is shared
 
-### Create and export Public/Private keys
-
-#### command
-
-`create -usr <Application NT Identity> -nme <Windows RSA Container name> -exp <path of exported key> -pb`
-
-#### Example
-
-```
-# create public/private keys and export public key
-
-create -usr desktop/webapplication -nme webapplication-config -exp .\publicKey -pb
-```
-
-#### Response
-
-Creates a RSA container at `C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys` with limited access rules
-
-Creates a public key file at the specified location
-
+[Getting Started](../README.MD) > Creating Keys > [Encrypting Files](./Encryption.md)
