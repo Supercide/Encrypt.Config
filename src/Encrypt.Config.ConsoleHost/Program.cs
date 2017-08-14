@@ -26,9 +26,6 @@ namespace Encrypt.Config.ConsoleHost
                 context.Request();
 
             } while (context.State.GetType() != typeof(EndState));
-
-
-            
         }
 
        private static Context ToCommands(string[] args)
