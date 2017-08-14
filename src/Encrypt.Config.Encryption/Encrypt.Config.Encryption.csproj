@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4ABFC56C-B6AA-4A2D-9251-2882752EE41C}</ProjectGuid>
+    <ProjectGuid>{32CAF4FC-2216-4964-946B-5E3EA7AAA849}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Encrypt.Config.Console.Tests</RootNamespace>
-    <AssemblyName>Encrypt.Config.Console.Tests</AssemblyName>
+    <RootNamespace>Encrypt.Config.Encryption</RootNamespace>
+    <AssemblyName>Encrypt.Config.Encryption</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,12 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,32 +41,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Console\WhenExportingKey.cs" />
-    <Compile Include="Encryption\HybridEncryptTests\WhenDecryptingData.cs" />
-    <Compile Include="Encryption\HybridEncryptTests\WhenEncryptingData.cs" />
-    <Compile Include="Encryption\HybridEncryptTests\WhenImportingKey.cs" />
-    <Compile Include="Console\WhenCreatingKeys.cs" />
-    <Compile Include="Console\WhenEncryptingFileTests.cs" />
-    <Compile Include="GlobalSetup.cs" />
+    <Compile Include="..\..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="EncryptionSettings.cs" />
+    <Compile Include="Hybrid\HybridDecryption.cs" />
+    <Compile Include="Hybrid\HybridEncryption.cs" />
+    <Compile Include="Hybrid\IHybridEncryption.cs" />
+    <Compile Include="Asymmetric\RSAEncryption.cs" />
+    <Compile Include="Symmetric\AESEncryption.cs" />
+    <Compile Include="NumberGenerators\RNGCryptoRandomBytesGenerator.cs" />
+    <Compile Include="NumberGenerators\IGenerateRandomBytes.cs" />
+    <Compile Include="Asymmetric\IAsymmetricKeyEncryption.cs" />
+    <Compile Include="Symmetric\ISymmetricKeyEncryption.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Encryption\RSAEncryptionTests\RSAEncryptionTests.cs" />
+    <Compile Include="Asymmetric\RSAContainerFactory.cs" />
+    <Compile Include="Constants\WellKnownPaths.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Encrypt.Config.ConsoleHost\Encrypt.Config.ConsoleHost.csproj">
-      <Project>{D4C72C5C-6851-4B7E-8DB1-DF62DC991091}</Project>
-      <Name>Encrypt.Config.ConsoleHost</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Encrypt.Config.Encryption\Encrypt.Config.Encryption.csproj">
-      <Project>{32CAF4FC-2216-4964-946B-5E3EA7AAA849}</Project>
-      <Name>Encrypt.Config.Encryption</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

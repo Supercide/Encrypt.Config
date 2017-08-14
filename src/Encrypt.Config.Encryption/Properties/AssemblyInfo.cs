@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Encrypt.Config.ConsoleHost")]
+[assembly: AssemblyTitle("Encrypt.Config.Encryption")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Encrypt.Config.ConsoleHost")]
+[assembly: AssemblyProduct("Encrypt.Config.Encryption")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,4 +19,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d4c72c5c-6851-4b7e-8db1-df62dc991091")]
+[assembly: Guid("32caf4fc-2216-4964-946b-5e3ea7aaa849")]

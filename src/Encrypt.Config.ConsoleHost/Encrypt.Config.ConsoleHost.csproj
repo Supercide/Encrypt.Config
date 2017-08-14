@@ -5,12 +5,13 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D4C72C5C-6851-4B7E-8DB1-DF62DC991091}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Encrypt.Config.ConsoleHost</RootNamespace>
     <AssemblyName>Encrypt.Config.ConsoleHost</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Encrypt.Config.ConsoleHost.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -46,31 +50,30 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="ConsoleStateMachine\Context.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\CreateContainerState.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\CreateContainerStateFactory.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\CreateStateFactory.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\ExportStateFactory.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\IConsoleStateFactory.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\JsonConfigEncryptionStateFactory.cs" />
-    <Compile Include="ConsoleStateMachine\Factories\WellKnownCommands.cs" />
-    <Compile Include="ConsoleStateMachine\States\ConsoleState.cs" />
-    <Compile Include="ConsoleStateMachine\States\CreateKeysState.cs" />
-    <Compile Include="ConsoleStateMachine\States\EndState.cs" />
-    <Compile Include="ConsoleStateMachine\States\ExportState.cs" />
-    <Compile Include="ConsoleStateMachine\States\JsonConfigEncryptionState.cs" />
+    <Compile Include="StateMachine\Context.cs" />
+    <Compile Include="StateMachine\Factories\CreateStateFactory.cs" />
+    <Compile Include="StateMachine\Factories\ExportStateFactory.cs" />
+    <Compile Include="StateMachine\Factories\IConsoleStateFactory.cs" />
+    <Compile Include="StateMachine\Factories\EncryptionStateFactory.cs" />
+    <Compile Include="Constants\WellKnownCommands.cs" />
+    <Compile Include="StateMachine\States\ConsoleState.cs" />
+    <Compile Include="StateMachine\States\CreateKeysState.cs" />
+    <Compile Include="StateMachine\States\EndState.cs" />
+    <Compile Include="StateMachine\States\ExportState.cs" />
+    <Compile Include="StateMachine\States\EncryptionState.cs" />
+    <Compile Include="Exceptions\ContainerNameMissingException.cs" />
+    <Compile Include="Exceptions\MissingFilePathException.cs" />
+    <Compile Include="Exceptions\MissingKeyException.cs" />
+    <Compile Include="Exceptions\UsernameMissingException.cs" />
+    <Compile Include="FileEncrypter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WellKnownCommandArguments.cs" />
+    <Compile Include="Constants\WellKnownCommandArguments.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Encrypt.Config.Json\Encrypt.Config.Json.csproj">
-      <Project>{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}</Project>
-      <Name>Encrypt.Config.Json</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Encrypt.Config.RSA\Encrypt.Config.RSA.csproj">
-      <Project>{1475C531-0697-42A2-B2F0-1A35A14EAB0B}</Project>
-      <Name>Encrypt.Config.RSA</Name>
+    <ProjectReference Include="..\Encrypt.Config.Encryption\Encrypt.Config.Encryption.csproj">
+      <Project>{32CAF4FC-2216-4964-946B-5E3EA7AAA849}</Project>
+      <Name>Encrypt.Config.Encryption</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

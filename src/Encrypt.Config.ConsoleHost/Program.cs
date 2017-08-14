@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Encrypt.Config.ConsoleHost.ConsoleStateMachine;
-using Encrypt.Config.ConsoleHost.ConsoleStateMachine.Factories;
-using Encrypt.Config.ConsoleHost.ConsoleStateMachine.States;
+using Encrypt.Config.ConsoleHost.StateMachine;
+using Encrypt.Config.ConsoleHost.StateMachine.Factories;
+using Encrypt.Config.ConsoleHost.StateMachine.States;
 
 namespace Encrypt.Config.ConsoleHost
 {
@@ -13,8 +13,7 @@ namespace Encrypt.Config.ConsoleHost
 
         private static readonly IConsoleStateFactory[] _factories = {
             new CreateStateFactory(),
-            new CreateContainerStateFactory(), 
-            new JsonConfigEncryptionStateFactory(),
+            new EncryptionStateFactory(),
             new ExportStateFactory()
         };
 
@@ -27,9 +26,6 @@ namespace Encrypt.Config.ConsoleHost
                 context.Request();
 
             } while (context.State.GetType() != typeof(EndState));
-
-
-            
         }
 
        private static Context ToCommands(string[] args)

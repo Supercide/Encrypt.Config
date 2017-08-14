@@ -9,10 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{615D7585
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encrypt.Config.ConsoleHost", "src\Encrypt.Config.ConsoleHost\Encrypt.Config.ConsoleHost.csproj", "{D4C72C5C-6851-4B7E-8DB1-DF62DC991091}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encrypt.Config.Json", "src\Encrypt.Config.Json\Encrypt.Config.Json.csproj", "{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encrypt.Config.RSA", "src\Encrypt.Config.RSA\Encrypt.Config.RSA.csproj", "{1475C531-0697-42A2-B2F0-1A35A14EAB0B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encrypt.Config.Console.Tests", "tests\Encrypt.Config.Console.Tests\Encrypt.Config.Console.Tests.csproj", "{4ABFC56C-B6AA-4A2D-9251-2882752EE41C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CBF0522-5104-4091-A6CA-F332D12384D8}"
@@ -22,6 +18,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.cake = build.cake
 		build.ps1 = build.ps1
 		README.MD = README.MD
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encrypt.Config.Encryption", "src\Encrypt.Config.Encryption\Encrypt.Config.Encryption.csproj", "{32CAF4FC-2216-4964-946B-5E3EA7AAA849}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{EDF8FCBB-A56D-487E-9BCA-92AA85914623}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Architecture.md = docs\Architecture.md
+		docs\CreatingKeys.md = docs\CreatingKeys.md
+		docs\Encryption.md = docs\Encryption.md
+		docs\ExportingKeys.md = docs\ExportingKeys.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{E4D0E12B-8929-43AD-AB09-0BDC81061CA6}"
+	ProjectSection(SolutionItems) = preProject
+		docs\images\Diagram-How.jpg = docs\images\Diagram-How.jpg
 	EndProjectSection
 EndProject
 Global
@@ -34,26 +45,22 @@ Global
 		{D4C72C5C-6851-4B7E-8DB1-DF62DC991091}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4C72C5C-6851-4B7E-8DB1-DF62DC991091}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4C72C5C-6851-4B7E-8DB1-DF62DC991091}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1475C531-0697-42A2-B2F0-1A35A14EAB0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1475C531-0697-42A2-B2F0-1A35A14EAB0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1475C531-0697-42A2-B2F0-1A35A14EAB0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1475C531-0697-42A2-B2F0-1A35A14EAB0B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4ABFC56C-B6AA-4A2D-9251-2882752EE41C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4ABFC56C-B6AA-4A2D-9251-2882752EE41C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4ABFC56C-B6AA-4A2D-9251-2882752EE41C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4ABFC56C-B6AA-4A2D-9251-2882752EE41C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32CAF4FC-2216-4964-946B-5E3EA7AAA849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32CAF4FC-2216-4964-946B-5E3EA7AAA849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32CAF4FC-2216-4964-946B-5E3EA7AAA849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32CAF4FC-2216-4964-946B-5E3EA7AAA849}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D4C72C5C-6851-4B7E-8DB1-DF62DC991091} = {FC1ACEAE-AF55-4364-819E-CF8D4C30FDB0}
-		{B5E8B5FA-1E41-47F3-85BA-04FCBCF4ABBA} = {FC1ACEAE-AF55-4364-819E-CF8D4C30FDB0}
-		{1475C531-0697-42A2-B2F0-1A35A14EAB0B} = {FC1ACEAE-AF55-4364-819E-CF8D4C30FDB0}
 		{4ABFC56C-B6AA-4A2D-9251-2882752EE41C} = {615D7585-6491-478D-A383-00070C580DB6}
+		{32CAF4FC-2216-4964-946B-5E3EA7AAA849} = {FC1ACEAE-AF55-4364-819E-CF8D4C30FDB0}
+		{E4D0E12B-8929-43AD-AB09-0BDC81061CA6} = {EDF8FCBB-A56D-487E-9BCA-92AA85914623}
 	EndGlobalSection
 EndGlobal
