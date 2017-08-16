@@ -19,11 +19,11 @@ Encryption comes with its own set of unique challenges how do we manage keys? Ho
 
 ## Key distribution 
 #### how do we convey keys to those who need them to establish secure communication? 
-Asymmetric algorithms solve this issue by separating keys used for encryption and decryption into Public and Private keys. The encryption key can be made public but the decryption key must be kept private. Encrypt.Config uses RSA to create public and private keys.
+Asymmetric algorithms solve this issue by separating keys used for encryption and decryption into Public and Private keys. The only thing you can do with a public key is encrypt data and verify signatures. Ifthis key was to get into the hands of somebody who the key was not intended for all they could do is encrypt data. The private key however is used for message decryption and signing data. It goes without saying that the storage and handling of the private key must be handled with care.
 
 ## Key management
 #### how do we preserve key safety and make them available as needed? 
-All windows machines from Windows XP and above have the ability to securely store keys in RSA containers. [See here](https://msdn.microsoft.com/library/9a179f38-8fb7-4442-964c-fb7b9f39f5b9) for more details.
+All windows machines from Windows XP and above have the ability to securely store keys in RSA containers. [See here](https://msdn.microsoft.com/library/9a179f38-8fb7-4442-964c-fb7b9f39f5b9) for more information.
  
 ## Trust
 #### How do we ensure that the encrypted message received came from a trusted source? 
